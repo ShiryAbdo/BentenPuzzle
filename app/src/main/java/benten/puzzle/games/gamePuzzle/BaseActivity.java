@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -41,7 +43,12 @@ public class BaseActivity extends AppCompatActivity {
     Toolbar toolbar ;
     Random random;
     int count =0;
-
+    boolean chhh = false;
+    SharedPreferences.Editor editor ,newEditore;
+    SharedPreferences sharedPref ,catogerys ;
+    int nexti ;
+    int score ;
+TextView scoret ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +56,36 @@ public class BaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
 
 
+
         setSupportActionBar(toolbar);
         random = new Random();
         bundle=getIntent().getExtras();
         showImage=(Button)findViewById(R.id.showImage);
+        scoret=(TextView)findViewById(R.id.score);
 
 
         if(bundle!=null) {
             catogery= bundle.getString("catogery");
 
         }
+        sharedPref = getApplicationContext().getSharedPreferences(catogery, Context.MODE_PRIVATE);
+        catogerys=getApplicationContext().getSharedPreferences("catogerys", Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        newEditore=catogerys.edit();
+        boolean frist_time = sharedPref.getBoolean("frist_time", true);
+          score = sharedPref.getInt("score", 0);
+        if(frist_time){
+            count=0;
+            score=0;
+            Toast.makeText(this,"frist",Toast.LENGTH_LONG).show();
+        }else{
+            count=score;
+            Toast.makeText(this,"second",Toast.LENGTH_LONG).show();
+
+        }
+        Toast.makeText(this,""+count,Toast.LENGTH_LONG).show();
+        scoret.setText(count+"");
+
          toolbar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
         toolbar.setTitle(catogery);
@@ -146,6 +173,7 @@ public class BaseActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(imageSourse==images.size()){
 
 
@@ -160,6 +188,12 @@ public class BaseActivity extends AppCompatActivity {
                     TextView text =(TextView)dialog.findViewById(R.id.text);
                     text.setText("Congratulations you finish"+" "+catogery+" "+"Level");
 
+                    editor.putBoolean("frist_time" ,true );
+                    editor.putInt("score" ,0);
+                    editor.putString(catogery,"Easy");
+                    editor.commit();
+                    newEditore.putString(catogery,"Easy");
+                    newEditore.commit();
 
 
                     Button dialogButton = (Button) dialog.findViewById(R.id.backtoMenu);
@@ -174,9 +208,13 @@ public class BaseActivity extends AppCompatActivity {
 
                     dialog.show();
                 }else{
-                    int next = count++;
-                    imageSourse=images.get(next);
-                    args.putInt("image",images.get(next));
+                    nexti = ++count;
+                    scoret.setText(nexti+"");
+                    editor.putBoolean("frist_time" ,false );
+                    editor.putInt("score" ,nexti);
+                    editor.commit();
+                    imageSourse=images.get(nexti);
+                    args.putInt("image",images.get(nexti));
                 }
 
 
@@ -203,76 +241,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-////        if (id == R.id.action_settings) {
-////            return true;
-////        }
-//        if(id == R.id.action_refresh){
-//         }
-//        if(id == R.id.next){
-//            if(imageSourse==images.size()){
-//
-//
-//            }else{}
-//            MainPuzzle newFragment = new MainPuzzle();
-//            Bundle args = new Bundle();
-//            args.putString("catogery", catogery);
-//            if(count==images.size()){
-//                // custom dialog
-//                final Dialog dialog = new Dialog(context, R.style.custom_dialog_theme);
-//                dialog.setContentView(R.layout.dialog_layout);
-//                TextView text =(TextView)dialog.findViewById(R.id.text);
-//                text.setText("Congratulations you finish"+" "+catogery+" "+"Level");
-//
-//
-//
-//                Button dialogButton = (Button) dialog.findViewById(R.id.backtoMenu);
-//                // if button is clicked, close the custom dialog
-//                dialogButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent intent = new Intent(getApplicationContext(),MenuActivity.class);
-//                        startActivity(intent);
-//                    }
-//                });
-//
-//                dialog.show();
-//            }else{
-//                args.putInt("image",images.get(count++));
-//             }
-//
-//
-//
-//
-//            newFragment.setArguments(args);
-//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//
-//            // Replace whatever is in the fragment_container view with this fragment,
-//            // and add the transaction to the back stack so the user can navigate back
-//
-//            transaction.replace(R.id.fragment_container, newFragment);
-//            transaction.addToBackStack(null);
-//
-//            // Commit the transaction
-//            transaction.commit();
-//
-//         }
-//        return super.onOptionsItemSelected(item);
-//    }
 
 
     @Override

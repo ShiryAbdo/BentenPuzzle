@@ -1,12 +1,13 @@
 package benten.puzzle.games.gamePuzzle;
 
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,12 +15,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,24 +37,29 @@ import android.widget.Toast;
 import com.dolby.dap.DolbyAudioProcessing;
 import com.dolby.dap.OnDolbyAudioProcessingEventListener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 
 import benten.puzzle.games.R;
+import benten.puzzle.games.gameMomery.DifficultData;
+import benten.puzzle.games.gameMomery.EasyData;
+import benten.puzzle.games.gameMomery.HardData;
+import benten.puzzle.games.gameMomery.MediumData;
 
 import static benten.puzzle.games.R.id.action_refresh;
-import static benten.puzzle.games.R.id.get_photo_with_came;
 import static benten.puzzle.games.R.id.removePhoto;
+import static benten.puzzle.games.R.id.selectImage;
 import static benten.puzzle.games.R.id.showImage;
 
-
-public class YourImageActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener,
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class SelectYourImage  extends android.app.Fragment implements MediaPlayer.OnCompletionListener,
         OnDolbyAudioProcessingEventListener {
+
     protected static final int MENU_SCRAMBLE = 0;
     protected static final int MENU_SELECT_IMAGE = 1;
     protected static final int MENU_TAKE_PHOTO = 2;
@@ -65,63 +72,64 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     protected static final String KEY_PUZZLE = "slidePuzzle";
     protected static final String KEY_PUZZLE_SIZE = "puzzleSize";
 
-    protected static final String FILENAME_DIR = " benten.puzzle.games";
+    protected static final String FILENAME_DIR = "benten.puzzle.games";
     protected static final String FILENAME_PHOTO_DIR = FILENAME_DIR + "/photo";
     protected static final String FILENAME_PHOTO = "photo.jpg";
 
-    protected static int DEFAULT_SIZE ;
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    Bitmap bitmap ;
+    protected static final int DEFAULT_SIZE = 3;
 
     private SlidePuzzleView view;
     private SlidePuzzle slidePuzzle;
-    private Options bitmapOptions;
+    private BitmapFactory.Options bitmapOptions;
     private int puzzleWidth = 1;
     private int puzzleHeight = 1;
     private Uri imageUri;
     private boolean portrait;
     private boolean expert;
-    Bundle bundle ;
-    int size ;
+    Bitmap bitmap ;
+
+
+
 
     MediaPlayer mPlayer;
     DolbyAudioProcessing mDolbyAudioProcessing;
-    private final java.util.List<String> mActList = new java.util.ArrayList<String>();
-
-
+    private final java.util.List<String> mActList = new ArrayList<String>();
+    Bundle bundle;
+    String catogery ;
+    int imageSourse ;
+    EasyData easyData ;
+    MediumData mediumData;
+    HardData hardData ;
+    DifficultData difficultData ;
+    ArrayList<Integer> images ;
+    String NN;
+    BaseActivity baseActivity ;
     PopupWindow popupWindow;
     View popupView;
     int mCurrentX,mCurrentY;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-//        setTitle("Capture your image");
-        setTitle(Html.fromHtml("<small> Capture Image</small>"));
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.icone);
-        bundle=getIntent().getExtras();
-
-        if(bundle!=null) {
-            size=bundle.getInt("DEFAULT_SIZE");
-         }
-        DEFAULT_SIZE=size;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
 
 
-        bitmapOptions = new Options();
+
+
+
+        bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
 
         slidePuzzle = new SlidePuzzle();
 
-        view = new SlidePuzzleView(this, slidePuzzle,YourImageActivity.this);
-        setContentView(view);
+        view = new SlidePuzzleView(getActivity(), slidePuzzle ,getActivity());
+
+
 
         view.post(new Runnable() {
             public void run() {
-                popupView = View.inflate(getApplicationContext(), R.layout.popup_capture,null);
+                popupView = View.inflate(getActivity(), R.layout.popup,null);
                 popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 
@@ -162,17 +170,11 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
             }
         });
 
-        shuffle();
 
-        if(!loadPreferences())
-        {
-            setPuzzleSize(DEFAULT_SIZE, true);
-        }
-
-//        Uri path = Uri.parse("android.resource://puzzle.child.gams/" + R.drawable.dabdob);
-
-//        loadBitmap(path);
+        return view;
     }
+
+
 
     private void shuffle() {
         slidePuzzle.init(puzzleWidth, puzzleHeight);
@@ -184,10 +186,10 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     protected void loadBitmap(Uri uri) {
         try
         {
-            Options o = new Options();
+            BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
 
-            InputStream imageStream = getContentResolver().openInputStream(uri);
+            InputStream imageStream = getActivity().getContentResolver().openInputStream(uri);
             BitmapFactory.decodeStream(imageStream, null, o);
 
             int targetWidth = view.getTargetWidth();
@@ -216,18 +218,18 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
             o.inScaled = false;
             o.inJustDecodeBounds = false;
 
-            imageStream = getContentResolver().openInputStream(uri);
-              bitmap = BitmapFactory.decodeStream(imageStream, null, o);
+            imageStream = getActivity().getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(imageStream, null, o);
 
             if(bitmap == null)
             {
-                Toast.makeText(this, getString(R.string.error_could_not_load_image), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.error_could_not_load_image), Toast.LENGTH_LONG).show();
                 return;
             }
 
             int rotate = 0;
 
-            Cursor cursor = getContentResolver().query(uri, new String[] {MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
+            Cursor cursor = getActivity().getContentResolver().query(uri, new String[] {MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
 
             if(cursor != null)
             {
@@ -262,7 +264,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         }
         catch(FileNotFoundException ex)
         {
-            Toast.makeText(this, MessageFormat.format(getString(R.string.error_could_not_load_image_error), ex.getMessage()), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), MessageFormat.format(getString(R.string.error_could_not_load_image_error), ex.getMessage()), Toast.LENGTH_LONG).show();
             return;
         }
     }
@@ -288,7 +290,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
         if(dir == null)
         {
-            Toast.makeText(this, getString(R.string.error_could_not_create_directory_to_store_photo), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.error_could_not_create_directory_to_store_photo), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -296,42 +298,6 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         Intent photoPickerIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(photoPickerIntent, RESULT_TAKE_PHOTO);
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE){
-
-            }else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
-    }
-
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
-
-        FileOutputStream fo;
-        try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         setBitmap(thumbnail);
-//        ivImage.setImageBitmap(thumbnail);
     }
 
 
@@ -397,22 +363,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         }
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-    {
-        super.onCreateContextMenu(menu, v, menuInfo);
 
-        onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_image, menu);
-
-        return true;
-    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item)
@@ -420,95 +371,13 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         return onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case action_refresh:
-                shuffle();
-                return true;
-
-            case removePhoto:
-                ((ViewGroup)view.getParent()).removeView(view);
-                return true;
-
-            case get_photo_with_came:
-                setContentView(view);
-                cameraIntent();
-                return true;
-
-
-            case showImage:
-                setContentView(view);
-                view.post(new Runnable() {
-                    public void run() {
-                        popupView = View.inflate(getApplicationContext(), R.layout.show_image_popup,null);
-                        popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-
-                        mCurrentX = 20;
-                        mCurrentY = 50;
-
-                        popupWindow.showAtLocation(view, Gravity.CENTER, mCurrentX, mCurrentY);
-                        ImageView image = (ImageView)popupView.findViewById(R.id.image);
-                        if(bitmap!=null){
-                            image.setImageBitmap(bitmap);
-                        }
-
-                        Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
-
-                        btnClose.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                popupWindow.dismiss();
-                            }
-                        });
-
-
-                        popupView.setOnTouchListener(new View.OnTouchListener() {
-                            private float mDx;
-                            private float mDy;
-
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-                                int action = event.getAction();
-                                if (action == MotionEvent.ACTION_DOWN) {
-                                    mDx = mCurrentX - event.getRawX();
-                                    mDy = mCurrentY - event.getRawY();
-                                } else
-                                if (action == MotionEvent.ACTION_MOVE) {
-                                    mCurrentX = (int) (event.getRawX() + mDx);
-                                    mCurrentY = (int) (event.getRawY() + mDy);
-                                    popupWindow.update(mCurrentX, mCurrentY, -1, -1);
-                                }
-                                return true;
-                            }
-                        });
-
-                    }
-                });
-                return true;
-
-            default:
-                setContentView(view);
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void cameraIntent()
-    {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
 
     protected SharedPreferences getPreferences()
     {
-        return getSharedPreferences(MainPuzzle.class.getName(), Activity.MODE_PRIVATE);
+        return getActivity().getSharedPreferences(MainPuzzle.class.getName(), Activity.MODE_PRIVATE);
     }
     @Override
-    protected void onStop()
+    public void onStop()
     {
         super.onStop();
 
@@ -518,7 +387,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         if (mPlayer != null)
@@ -587,19 +456,19 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     {
         if(mPlayer == null) {
             mPlayer = MediaPlayer.create(
-                    YourImageActivity.this,
+                    getActivity(),
                     R.raw.slide);
             mPlayer.start();
         } else {
             mPlayer.release();
             mPlayer = null;
             mPlayer = MediaPlayer.create(
-                    YourImageActivity.this,
+                    getActivity(),
                     R.raw.slide);
             mPlayer.start();
         }
 
-        mDolbyAudioProcessing = DolbyAudioProcessing.getDolbyAudioProcessing(this, DolbyAudioProcessing.PROFILE.GAME, this);
+        mDolbyAudioProcessing = DolbyAudioProcessing.getDolbyAudioProcessing(getActivity(), DolbyAudioProcessing.PROFILE.GAME, this);
         if (mDolbyAudioProcessing == null) {
             return;
         }
@@ -609,21 +478,21 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     {
         if(mPlayer == null) {
             mPlayer = MediaPlayer.create(
-                    YourImageActivity.this,
+                    getActivity(),
                     R.raw.fireworks);
             mPlayer.start();
         } else {
             mPlayer.release();
             mPlayer = null;
             mPlayer = MediaPlayer.create(
-                    YourImageActivity.this,
+                    getActivity(),
                     R.raw.fireworks);
             mPlayer.start();
         }
 
-        mDolbyAudioProcessing = DolbyAudioProcessing.getDolbyAudioProcessing(this, DolbyAudioProcessing.PROFILE.GAME, this);
+        mDolbyAudioProcessing = DolbyAudioProcessing.getDolbyAudioProcessing(getActivity(), DolbyAudioProcessing.PROFILE.GAME, this);
         if (mDolbyAudioProcessing == null) {
-            Toast.makeText(this,
+            Toast.makeText(getActivity(),
                     "Dolby Audio Processing not available on this device.",
                     Toast.LENGTH_SHORT).show();
             shuffle();
@@ -657,7 +526,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
 
         Log.d("Dolby processing", "onDestroy()");
@@ -673,14 +542,14 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         restartSession();
 
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         Log.d("Dolby processing", "The application is in background, supsendSession");
         //
@@ -756,5 +625,6 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     {
         Log.e("Dolby processing", Log.getStackTraceString(ex));
     }
+
 
 }

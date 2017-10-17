@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.dolby.dap.DolbyAudioProcessing;
@@ -83,6 +84,10 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
     ArrayList<Integer> images ;
     String NN;
     BaseActivity baseActivity ;
+    PopupWindow popupWindow;
+    View popupView;
+    int mCurrentX,mCurrentY;
+
 
 
     @Override
@@ -104,8 +109,9 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
         bitmapOptions.inScaled = false;
 
         slidePuzzle = new SlidePuzzle();
+        MainPuzzle mainPuzzle = new MainPuzzle() ;
 
-        view = new SlidePuzzleView(getActivity(), slidePuzzle);
+        view = new SlidePuzzleView(getActivity(), slidePuzzle ,getActivity());
 
         shuffle();
 
@@ -135,38 +141,10 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
         Uri path = Uri.parse("android.resource://benten.puzzle.games/" + image);
 
         loadBitmap(path);
-        boolean solved = slidePuzzle.isSolved();
-        if(solved==true){
-            // custom dialog
-            final Dialog dialog = new Dialog(getActivity(), R.style.custom_dialog_theme);
-            dialog.setContentView(R.layout.dialog_layout);
+        BaseActivity baseActivity = new BaseActivity();
+        boolean solved =  baseActivity.chhh;
 
-
-
-             ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
-            imagee.setImageResource(imageSourse);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-            dialog.show();
-        }else{
-//
-//            getActivity().findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(getActivity(), "you should solve it frist", Toast.LENGTH_LONG).show();
-//                }
-//            });
-
-
-        }
+        getActivity().findViewById(R.id.next).setEnabled(false);
         getActivity().findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,6 +157,7 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
         // Inflate the layout for this fragment
         return view;
     }
+
 
 
     private void shuffle() {

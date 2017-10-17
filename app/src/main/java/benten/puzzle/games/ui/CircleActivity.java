@@ -61,7 +61,7 @@ public class CircleActivity extends Activity
 		gg.add(drawable1);
 		gg.add(drawable2);
 		mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
-		mCircleMenuLayout.setMenuItemIconsAndTexts(gg, mItemTexts);
+//		mCircleMenuLayout.setMenuItemIconsAndTexts(gg, mItemTexts);
 
 		mCircleMenuLayout.setOnMenuItemClickListener(new CircleMenuLayout.OnMenuItemClickListener()
 		{

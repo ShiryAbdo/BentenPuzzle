@@ -1,5 +1,6 @@
 package benten.puzzle.games.gamePuzzle;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -26,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -39,14 +44,16 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 
 import benten.puzzle.games.R;
+import devlight.io.library.ntb.NavigationTabBar;
 
 import static benten.puzzle.games.R.id.action_refresh;
 import static benten.puzzle.games.R.id.removePhoto;
 import static benten.puzzle.games.R.id.selectImage;
+import static benten.puzzle.games.R.id.showImage;
 
 
 public class ImageFromYourGalayActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener,
-        OnDolbyAudioProcessingEventListener {
+        OnDolbyAudioProcessingEventListener , android.support.v7.app.ActionBar.TabListener {
     protected static final int MENU_SCRAMBLE = 0;
     protected static final int MENU_SELECT_IMAGE = 1;
     protected static final int MENU_TAKE_PHOTO = 2;
@@ -64,6 +71,7 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
     protected static final String FILENAME_PHOTO = "photo.jpg";
 
     protected static final int DEFAULT_SIZE = 3;
+    Bitmap bitmap ;
 
     private SlidePuzzleView view;
     private SlidePuzzle slidePuzzle;
@@ -73,6 +81,7 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
     private Uri imageUri;
     private boolean portrait;
     private boolean expert;
+    private TabLayout tabLayout;
 
     MediaPlayer mPlayer;
     DolbyAudioProcessing mDolbyAudioProcessing;
@@ -87,7 +96,7 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
- //        setTitle("Capture your image");
+        //        setTitle("Capture your image");
         setTitle(Html.fromHtml("<small>Galary Image</small>"));
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -95,14 +104,21 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
 
 
 
+
+
+
         bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
 
         slidePuzzle = new SlidePuzzle();
+        ImageFromYourGalayActivity  imageFromYourGalayActivity = new ImageFromYourGalayActivity();
 
-        view = new SlidePuzzleView(this, slidePuzzle);
+        view = new SlidePuzzleView(this, slidePuzzle ,ImageFromYourGalayActivity.this);
+
         setContentView(view);
-        view.post(new Runnable() {
+
+
+         view.post(new Runnable() {
             public void run() {
                 popupView = View.inflate(getApplicationContext(), R.layout.popup,null);
                 popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -208,7 +224,7 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
             o.inJustDecodeBounds = false;
 
             imageStream = getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(imageStream, null, o);
+             bitmap = BitmapFactory.decodeStream(imageStream, null, o);
 
             if(bitmap == null)
             {
@@ -430,6 +446,57 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
             case selectImage:
                 setContentView(view);
                 selectImage();
+                return true;
+
+            case showImage:
+                setContentView(view);
+                view.post(new Runnable() {
+                    public void run() {
+                        popupView = View.inflate(getApplicationContext(), R.layout.show_image_popup,null);
+                        popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+                        mCurrentX = 20;
+                        mCurrentY = 50;
+
+                        popupWindow.showAtLocation(view, Gravity.CENTER, mCurrentX, mCurrentY);
+                        ImageView image = (ImageView)popupView.findViewById(R.id.image);
+                        if(bitmap!=null){
+                            image.setImageBitmap(bitmap);
+                        }
+
+                        Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
+
+                        btnClose.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                popupWindow.dismiss();
+                            }
+                        });
+
+
+                        popupView.setOnTouchListener(new View.OnTouchListener() {
+                            private float mDx;
+                            private float mDy;
+
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                int action = event.getAction();
+                                if (action == MotionEvent.ACTION_DOWN) {
+                                    mDx = mCurrentX - event.getRawX();
+                                    mDy = mCurrentY - event.getRawY();
+                                } else
+                                if (action == MotionEvent.ACTION_MOVE) {
+                                    mCurrentX = (int) (event.getRawX() + mDx);
+                                    mCurrentY = (int) (event.getRawY() + mDy);
+                                    popupWindow.update(mCurrentX, mCurrentY, -1, -1);
+                                }
+                                return true;
+                            }
+                        });
+
+                    }
+                });
                 return true;
 
             default:
@@ -692,4 +759,18 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
         Log.e("Dolby processing", Log.getStackTraceString(ex));
     }
 
+    @Override
+    public void onTabSelected(android.support.v7.app.ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabUnselected(android.support.v7.app.ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(android.support.v7.app.ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
 }

@@ -40,8 +40,13 @@
         <activity
             android:name=".ui.MainCircleActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme"></activity>
-        <activity android:name=".GTU_MCA_Custom_ProgressBar"></activity>
+            android:theme="@style/Theme" />
+        <activity android:name=".GTU_MCA_Custom_ProgressBar" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Main3Activity"></activity>
     </application>
 
 </manifest>

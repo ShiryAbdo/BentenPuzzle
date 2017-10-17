@@ -5,6 +5,7 @@ package benten.puzzle.games.gamePuzzle;
  */
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,9 +17,14 @@ import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import benten.puzzle.games.R;
 
 
 public class SlidePuzzleView extends View {
@@ -63,12 +69,17 @@ public class SlidePuzzleView extends View {
     private boolean dragInTarget = false;
     private int[] tiles;
     private Paint tilePaint;
+     public  boolean  checked = false;
+    Context contxt;
+    Activity activiy ;
 
-    public SlidePuzzleView(Context context, SlidePuzzle slidePuzzle) {
+    public SlidePuzzleView(Context context, SlidePuzzle slidePuzzle, Activity activity) {
         super(context);
 
         sourceRect = new Rect();
         targetRect = new RectF();
+        contxt=context;
+        activiy =activity;
 
         this.slidePuzzle = slidePuzzle;
 
@@ -326,7 +337,7 @@ public class SlidePuzzleView extends View {
         }
     }
 
-    private boolean finishDrag(MotionEvent event) {
+    protected boolean finishDrag(MotionEvent event) {
         if(dragging == null)
         {
             return false;
@@ -346,6 +357,7 @@ public class SlidePuzzleView extends View {
         dragInTarget = false;
         dragging = null;
         invalidate();
+        checked=true;
 
         return true;
     }
@@ -363,10 +375,39 @@ public class SlidePuzzleView extends View {
 
         invalidate();
 
-        if(slidePuzzle.isSolved())
-        {
-            onFinish();
+        if(slidePuzzle.isSolved()) {
+//            onFinish();
+
+
+
+
+            final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
+            dialog.setContentView(R.layout.one_image);
+
+
+
+            ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
+            imagee.setImageResource(R.drawable.icone);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BaseActivity baseActivity = new BaseActivity();
+                    activiy.findViewById(R.id.next).setEnabled(true);
+                    baseActivity.chhh= true;
+
+
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        }else {
+
         }
+
     }
 
     private void vibrate(long d) {
@@ -378,9 +419,9 @@ public class SlidePuzzleView extends View {
         }
     }
 
-    private void onFinish() {
-        MainPuzzle activity = new MainPuzzle();
-        activity.onFinish();
+    public boolean onFinish() {
+
+        return  checked;
     }
 
     private void playSlide() {

@@ -3,7 +3,9 @@ package benten.puzzle.games.ui;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,6 +26,13 @@ import benten.puzzle.games.gamePuzzle.YourImageActivity;
 
 
 public class MainCircleActivity extends Activity {
+    SharedPreferences.Editor editor;
+    SharedPreferences sharedPref_easy;
+    SharedPreferences sharedPref_medium;
+    SharedPreferences sharedPref_hard;
+    SharedPreferences sharedPref_difficult;
+
+
 
 	private CircleMenuLayout mCircleMenuLayout;
 	private String[] mItemTexts = new String[] { "Easy", "Medium", "Hard","Difficult", "Capture", "Galary"};
@@ -33,20 +42,84 @@ public class MainCircleActivity extends Activity {
 
 	private ArrayList<TextDrawable> gg ;
 
-//	private int[] mItemImgs = new int[] {R.drawable.b,
-//			R.drawable.b, R.drawable.c,
-//			R.drawable.d, R.drawable.e,
-//			R.drawable.f,R.drawable.g,R.drawable.h};
+	private ArrayList<Integer> mItemImgs;
+//            = new int[] {
+//            R.drawable.easy,
+//			R.drawable.medium,
+//            R.drawable.hard,
+//			R.drawable.difficult,
+//            R.drawable.capture,
+//            R.drawable.photo};
+
+    private ArrayList<Integer> newImage ;
+//            new int[] {
+//            R.drawable.hard,
+//            R.drawable.hard,
+//            R.drawable.hard,
+//            R.drawable.hard,
+//            R.drawable.hard,
+//            R.drawable.hard};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main02);
+        mItemImgs= new ArrayList<>();
+        newImage= new ArrayList<>();
+        mItemImgs.add(R.drawable.easy);
+        mItemImgs.add(R.drawable.medium);
+        mItemImgs.add(R.drawable.hard);
+        mItemImgs.add(R.drawable.difficult);
+        mItemImgs.add(R.drawable.capture);
+        mItemImgs.add(R.drawable.photo);
+
+        newImage.add( R.drawable.hard);
+        newImage.add( R.drawable.hard);
+        newImage.add( R.drawable.hard);
+        newImage.add( R.drawable.hard);
+        newImage.add( R.drawable.hard);
+        newImage.add( R.drawable.hard);
+
+        mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
+
+
 		gg= new ArrayList<>();
         easy="Easy";
         medium="Medium";
         hard ="Hard";
         difficult ="Difficult";
+        sharedPref_easy = getApplicationContext().getSharedPreferences("catogerys", Context.MODE_PRIVATE);
+        editor = sharedPref_easy.edit();
+        String eyc= sharedPref_easy.getString(easy,"");
+        String myc= sharedPref_easy.getString(medium,"");
+        String hyc= sharedPref_easy.getString(hard,"");
+        String dyc= sharedPref_easy.getString(difficult,"");
+        ArrayList<String>checed =new ArrayList<>();
+        if(!eyc.equals("")){
+            checed.add(eyc);
+        }
+        if(!myc.equals("")){
+            checed.add(myc);
+        }
+        if(!hyc.equals("")){
+            checed.add(hyc);
+        }
+        if(!dyc.equals("")){
+            checed.add(dyc);
+        }
+        if(!checed.isEmpty()){
+            for ( int i =0;i<checed.size();i++){
+                mItemImgs.set(i,newImage.get(i));
+
+
+            }
+
+        }
+
+        mCircleMenuLayout.setMenuItemIconsAndTexts(mItemImgs, mItemTexts);
+
+
+
 		  Easyy = TextDrawable.builder()
 				.beginConfig()
                 .textColor(Color.BLACK)
@@ -143,8 +216,6 @@ public class MainCircleActivity extends Activity {
                 .buildRoundRect("Easy", Color.rgb(128, 204, 51), 30);
 
 
-        mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
-		mCircleMenuLayout.setMenuItemIconsAndTexts(gg, mItemTexts);
         // more or less with default parameter
         final ImageView fabIconNew = new ImageView(this);
         fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.refresh));

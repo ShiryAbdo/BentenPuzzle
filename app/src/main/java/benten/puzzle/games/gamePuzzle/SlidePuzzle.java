@@ -26,6 +26,7 @@ public class SlidePuzzle {
     private int width;
     private int height;
 
+
     public void init(int width, int height) {
         this.width = width;
         this.height = height;

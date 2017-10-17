@@ -30,7 +30,7 @@ public class CircleMenuLayout extends ViewGroup
 	private float mPadding;
 	private double mStartAngle = 0;
 	private String[] mItemTexts;
-	private ArrayList<TextDrawable> mItemImgs;
+	private ArrayList<Integer> mItemImgs;
 	private int mMenuItemCount;
 	private float mTmpAngle;
 	private long mDownTime;
@@ -246,7 +246,7 @@ public class CircleMenuLayout extends ViewGroup
 
 	}
 
-	public void setMenuItemIconsAndTexts(ArrayList<TextDrawable> resIds, String[] texts)
+	public void setMenuItemIconsAndTexts(ArrayList<Integer> resIds, String[] texts)
 	{
 		mItemImgs = resIds;
 		mItemTexts = texts;
@@ -289,7 +289,7 @@ public class CircleMenuLayout extends ViewGroup
 			{
 				iv.setVisibility(View.VISIBLE);
 //				iv.setImageResource(mItemImgs[i]);
-				iv.setImageDrawable(mItemImgs.get(i));
+				iv.setImageResource(mItemImgs.get(i));
 
 				iv.setOnClickListener(new OnClickListener()
 				{

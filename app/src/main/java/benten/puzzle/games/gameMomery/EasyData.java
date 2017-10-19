@@ -18,6 +18,7 @@ public class EasyData {
 
 
 
+
     int [] arraImagRtage ={
             R.drawable.cute,
             R.drawable.batote,
@@ -26,7 +27,7 @@ public class EasyData {
             R.drawable.esy_two,
             R.drawable.garil,
             R.drawable.s
-           ,R.drawable.esy_three};
+            ,R.drawable.esy_three};
 
 
     int range = arraImagRtage.length;
@@ -35,22 +36,21 @@ public class EasyData {
     Random random = new Random();
 
 
+
     public  ArrayList<Integer> getEasyDataArray() {
 
         for( int i = 0; i < range; ++i)
         {
-            myImgCount = random.nextInt(range);
-            if(!numberArray.contains(arraImagRtage[myImgCount])){
-                numberArray.add(arraImagRtage[myImgCount]);
+             if(!numberArray.contains(arraImagRtage[i])){
+                numberArray.add(arraImagRtage[i]);
             }
         }
 
         if(numberArray.size()<range+1){
             for( int i = 0; i < range; ++i)
             {
-                myImgCount = random.nextInt(range);
-                if(!numberArray.contains(arraImagRtage[myImgCount])){
-                    numberArray.add(arraImagRtage[myImgCount]);
+                 if(!numberArray.contains(arraImagRtage[i])){
+                    numberArray.add(arraImagRtage[i]);
                 }
             }
 
@@ -60,6 +60,33 @@ public class EasyData {
 
         return numberArray;
     }
+
+//
+//    public  ArrayList<Integer> getEasyDataArray() {
+//
+//        for( int i = 0; i < range; ++i)
+//        {
+//            myImgCount = random.nextInt(range);
+//            if(!numberArray.contains(arraImagRtage[myImgCount])){
+//                numberArray.add(arraImagRtage[myImgCount]);
+//            }
+//        }
+//
+//        if(numberArray.size()<range+1){
+//            for( int i = 0; i < range; ++i)
+//            {
+//                myImgCount = random.nextInt(range);
+//                if(!numberArray.contains(arraImagRtage[myImgCount])){
+//                    numberArray.add(arraImagRtage[myImgCount]);
+//                }
+//            }
+//
+//        }
+//
+//
+//
+//        return numberArray;
+//    }
 
 
 

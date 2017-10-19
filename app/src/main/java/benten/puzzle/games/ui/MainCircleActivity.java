@@ -73,12 +73,12 @@ public class MainCircleActivity extends Activity {
         mItemImgs.add(R.drawable.capture);
         mItemImgs.add(R.drawable.photo);
 
-        newImage.add( R.drawable.hard);
-        newImage.add( R.drawable.hard);
-        newImage.add( R.drawable.hard);
-        newImage.add( R.drawable.hard);
-        newImage.add( R.drawable.hard);
-        newImage.add( R.drawable.hard);
+        newImage.add( R.drawable.easy_star);
+        newImage.add( R.drawable.medium_star);
+        newImage.add( R.drawable.hard_star);
+        newImage.add( R.drawable.difficult_star);
+        newImage.add( R.drawable.vvvv);
+        newImage.add( R.drawable.vvvv);
 
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
 
@@ -257,10 +257,20 @@ public class MainCircleActivity extends Activity {
         final ImageView rlIcon2 = new ImageView(this);
         final ImageView rlIcon3 = new ImageView(this);
         final ImageView rlIcon4 = new ImageView(this);
+        final ImageView rlIcon11 = new ImageView(this);
+        final ImageView rlIcon22 = new ImageView(this);
+        final ImageView rlIcon33 = new ImageView(this);
+        final ImageView rlIcon44 = new ImageView(this);
+
          rlIcon1.setImageDrawable(image1);
          rlIcon2.setImageDrawable(image2);
         rlIcon3.setImageDrawable(image3);
         rlIcon4.setImageDrawable(image4);
+
+        rlIcon11.setImageDrawable(image1);
+        rlIcon22.setImageDrawable(image2);
+        rlIcon33.setImageDrawable(image3);
+        rlIcon44.setImageDrawable(image4);
 
 		mCircleMenuLayout.setOnMenuItemClickListener(new CircleMenuLayout.OnMenuItemClickListener()
 		{
@@ -278,6 +288,7 @@ public class MainCircleActivity extends Activity {
                         intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",easy);
                         startActivity(intent);
+                        finish();
 
 
                         break;
@@ -286,75 +297,146 @@ public class MainCircleActivity extends Activity {
                         intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",medium);
                         startActivity(intent);
+                        finish();
 
                         break;
                     case 2:
                         intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",hard);
                         startActivity(intent);
+                        finish();
                         break;
                     case 3:
                           intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",difficult);
                         startActivity(intent);
+                        finish();
                         break;
                     case 4:
-                        String status =mItemTexts[pos];
-
-                        if(status=="Capture") {
-
-
-//                            gg.get(pos)=Easy;
-//                            view.setImageDrawable(Easy);
-
-                        } else {
-
-
-                        }
-                         final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
-                                 .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build(),120,120)
-
-                                 .attachTo(view)
+                        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon11).build(),120,120)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon22).build(),120,120)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon33).build(),120,120)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon44).build(),120,120)
+                                .attachTo(view)
                                 .build();
-                        rlIcon1.setOnClickListener(new View.OnClickListener() {
+                        rlIcon11.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
                                 intent.putExtra("DEFAULT_SIZE",3);
                                 startActivity(intent);
+                                finish();
 
 
                             }
                         });
-                        rlIcon2.setOnClickListener(new View.OnClickListener() {
+                        rlIcon22.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
                                 intent.putExtra("DEFAULT_SIZE",4);
                                 startActivity(intent);
+                                finish();
 
                             }
                         });
-                        rlIcon3.setOnClickListener(new View.OnClickListener() {
+                        rlIcon33.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
                                 intent.putExtra("DEFAULT_SIZE",5);
                                 startActivity(intent);
+                                finish();
 
                             }
                         });
-                        rlIcon4.setOnClickListener(new View.OnClickListener() {
+                        rlIcon44.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
                                 intent.putExtra("DEFAULT_SIZE",7);
                                 startActivity(intent);
+                                finish();
 
                             }
                         });
 
  //                         // Listen menu open and close events to animate the button content view
                         rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+                            @Override
+                            public void onMenuOpened(FloatingActionMenu menu) {
+
+
+
+//                                 Rotate the icon of rightLowerButton 45 degrees clockwise
+                                fabIconNew.setRotation(0);
+                                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+                                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+                                animation.start();
+                            }
+
+                            @Override
+                            public void onMenuClosed(FloatingActionMenu menu) {
+
+
+                                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
+                                fabIconNew.setRotation(45);
+                                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
+                                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+                                animation.start();
+                            }
+                        });
+
+
+
+                        break;
+                    case 5:
+                         final FloatingActionMenu rightLoerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build(),120,120)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build(),120,120)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build(),120,120)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build(),120,120)
+
+                                .attachTo(view)
+                                .build();
+
+                        rlIcon1.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getApplicationContext(),ImageFromYourGalayActivity.class);
+                                intent.putExtra("DEFAULT_SIZE",3);
+                                startActivity(intent);
+                                finish();
+
+
+                            }
+                        });
+                        rlIcon2.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getApplicationContext(),ImageFromYourGalayActivity.class);
+                                intent.putExtra("DEFAULT_SIZE",4);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                        });
+                        rlIcon3.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getApplicationContext(),ImageFromYourGalayActivity.class);
+                                intent.putExtra("DEFAULT_SIZE",5);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                        });
+                        rlIcon4.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getApplicationContext(),ImageFromYourGalayActivity.class);
+                                intent.putExtra("DEFAULT_SIZE",7);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                        });
+
+                        //                         // Listen menu open and close events to animate the button content view
+                        rightLoerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
                             @Override
                             public void onMenuOpened(FloatingActionMenu menu) {
 
@@ -370,20 +452,13 @@ public class MainCircleActivity extends Activity {
                             @Override
                             public void onMenuClosed(FloatingActionMenu menu) {
                                 gg.set(pos,Capture_your_puzzle);
-                                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
+//                                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
                                 fabIconNew.setRotation(45);
                                 PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
                                 ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
                                 animation.start();
                             }
                         });
-
-
-
-                        break;
-                    case 5:
-                          intent = new Intent(MainCircleActivity.this,ImageFromYourGalayActivity.class);
-                        startActivity(intent);
                         break;
 
 
@@ -395,7 +470,7 @@ public class MainCircleActivity extends Activity {
 			@Override
 			public void itemCenterClick(View view)
 			{
-				Toast.makeText(MainCircleActivity.this,"you can do something just like ccb  ",Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainCircleActivity.this,"Chose Game",Toast.LENGTH_SHORT).show();
 			}
 		});
 

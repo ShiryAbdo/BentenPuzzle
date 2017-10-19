@@ -70,7 +70,9 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
     protected static final String FILENAME_PHOTO_DIR = FILENAME_DIR + "/photo";
     protected static final String FILENAME_PHOTO = "photo.jpg";
 
-    protected static final int DEFAULT_SIZE = 3;
+    protected static  int DEFAULT_SIZE ;
+    Bundle bundle ;
+    int size ;
     Bitmap bitmap ;
 
     private SlidePuzzleView view;
@@ -88,8 +90,8 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
     private final java.util.List<String> mActList = new java.util.ArrayList<String>();
 
 
-    PopupWindow popupWindow;
-    View popupView;
+    PopupWindow popupWindow  ,pup;
+    View popupView ,popup;
     int mCurrentX,mCurrentY;
 
     @Override
@@ -101,6 +103,12 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.icone);
+        bundle=getIntent().getExtras();
+
+        if(bundle!=null) {
+            size=bundle.getInt("DEFAULT_SIZE");
+        }
+        DEFAULT_SIZE=size;
 
 
 
@@ -118,7 +126,90 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
         setContentView(view);
 
 
-         view.post(new Runnable() {
+        view.post(new Runnable() {
+            public void run() {
+                popup = View.inflate(getApplicationContext(), R.layout.buttom,null);
+                pup = new PopupWindow(popup, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+                mCurrentX = 20;
+                mCurrentY = 50;
+
+                pup.showAtLocation(view, Gravity.BOTTOM, mCurrentX, mCurrentY);
+                Button btnClose = (Button)popup.findViewById(R.id.btnClose);
+                Button dismis = (Button)popup.findViewById(R.id.dismis);
+                btnClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick( View v) {
+
+
+
+                        view.post(new Runnable() {
+                            public void run() {
+                                popupView = View.inflate(getApplicationContext(), R.layout.show_image_popup,null);
+                                popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+                                mCurrentX = 20;
+                                mCurrentY = 50;
+
+                                popupWindow.showAtLocation( view, Gravity.CENTER, mCurrentX, mCurrentY);
+                                ImageView image = (ImageView)popupView.findViewById(R.id.image);
+                                image.setImageBitmap(bitmap);
+
+
+                                Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
+
+                                btnClose.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        popupWindow.dismiss();
+                                    }
+                                });
+
+
+                                popupView.setOnTouchListener(new View.OnTouchListener() {
+                                    private float mDx;
+                                    private float mDy;
+
+                                    @Override
+                                    public boolean onTouch(View v, MotionEvent event) {
+                                        int action = event.getAction();
+                                        if (action == MotionEvent.ACTION_DOWN) {
+                                            mDx = mCurrentX - event.getRawX();
+                                            mDy = mCurrentY - event.getRawY();
+                                        } else
+                                        if (action == MotionEvent.ACTION_MOVE) {
+                                            mCurrentX = (int) (event.getRawX() + mDx);
+                                            mCurrentY = (int) (event.getRawY() + mDy);
+                                            popupWindow.update(mCurrentX, mCurrentY, -1, -1);
+                                        }
+                                        return true;
+                                    }
+                                });
+
+                            }
+                        });
+
+                    }
+                });
+
+                dismis.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        pup.dismiss();
+                     }
+                });
+
+
+
+
+            }
+        });
+
+
+
+        view.post(new Runnable() {
             public void run() {
                 popupView = View.inflate(getApplicationContext(), R.layout.popup,null);
                 popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -448,56 +539,7 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
                 selectImage();
                 return true;
 
-            case showImage:
-                setContentView(view);
-                view.post(new Runnable() {
-                    public void run() {
-                        popupView = View.inflate(getApplicationContext(), R.layout.show_image_popup,null);
-                        popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-
-                        mCurrentX = 20;
-                        mCurrentY = 50;
-
-                        popupWindow.showAtLocation(view, Gravity.CENTER, mCurrentX, mCurrentY);
-                        ImageView image = (ImageView)popupView.findViewById(R.id.image);
-                        if(bitmap!=null){
-                            image.setImageBitmap(bitmap);
-                        }
-
-                        Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
-
-                        btnClose.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                popupWindow.dismiss();
-                            }
-                        });
-
-
-                        popupView.setOnTouchListener(new View.OnTouchListener() {
-                            private float mDx;
-                            private float mDy;
-
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-                                int action = event.getAction();
-                                if (action == MotionEvent.ACTION_DOWN) {
-                                    mDx = mCurrentX - event.getRawX();
-                                    mDy = mCurrentY - event.getRawY();
-                                } else
-                                if (action == MotionEvent.ACTION_MOVE) {
-                                    mCurrentX = (int) (event.getRawX() + mDx);
-                                    mCurrentY = (int) (event.getRawY() + mDy);
-                                    popupWindow.update(mCurrentX, mCurrentY, -1, -1);
-                                }
-                                return true;
-                            }
-                        });
-
-                    }
-                });
-                return true;
 
             default:
                 setContentView(view);

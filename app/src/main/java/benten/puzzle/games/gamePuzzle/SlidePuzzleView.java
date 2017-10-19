@@ -362,7 +362,7 @@ public class SlidePuzzleView extends View {
         return true;
     }
 
-    private void doMove(int dragDirection, int count) {
+    private void doMove(int dragDirection, final int count) {
         playSlide();
         if(slidePuzzle.moveTile(dragDirection, count))
         {
@@ -378,32 +378,88 @@ public class SlidePuzzleView extends View {
         if(slidePuzzle.isSolved()) {
 //            onFinish();
 
+            BaseActivity baseActivity = null;
+            ImageFromYourGalayActivity imageFromYourGalayActivity = new ImageFromYourGalayActivity();
+            YourImageActivity  yourImageActivity = new YourImageActivity();
+    if (activiy instanceof BaseActivity){
+        final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
+        dialog.setContentView(R.layout.one_image);
 
 
 
-            final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
-            dialog.setContentView(R.layout.one_image);
+        ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
+        imagee.setImageResource(((BaseActivity) activiy).imageSourse);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activiy.findViewById(R.id.next).setEnabled(true);
+                activiy.findViewById(R.id.fragment_container).setVisibility(GONE);
+                activiy.findViewById(R.id.next_layout).setVisibility(VISIBLE);
+                activiy.findViewById(R.id.next_layout).invalidate();
+//                activiy.findViewById(R.id.next_layout).notify();
+                ((BaseActivity) activiy).countDownTimer.cancel();
+
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+            if (activiy instanceof ImageFromYourGalayActivity ){
+                final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
+                dialog.setContentView(R.layout.one_image);
 
 
 
-            ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
-            imagee.setImageResource(R.drawable.icone);
+                ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
+                imagee.setImageResource(R.drawable.icone);
 
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    BaseActivity baseActivity = new BaseActivity();
-                    activiy.findViewById(R.id.next).setEnabled(true);
-                    baseActivity.chhh= true;
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
 
-                    dialog.dismiss();
-                }
-            });
 
-            dialog.show();
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+            }
+
+            if (activiy instanceof  YourImageActivity ){
+                final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
+                dialog.setContentView(R.layout.one_image);
+
+
+
+                ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
+                imagee.setImageResource(R.drawable.icone);
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+            }
+
+
+
         }else {
 
         }

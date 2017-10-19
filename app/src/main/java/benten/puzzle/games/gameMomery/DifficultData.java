@@ -21,16 +21,43 @@ public class DifficultData {
     Random random = new Random();
 
 
+
+
     public  ArrayList<Integer> getDifficultData() {
 
         for( int i = 0; i < range; ++i)
         {
-            myImgCount = random.nextInt(range);
-            if(!numberArray.contains(arraImagRtage[myImgCount])){
-                numberArray.add(arraImagRtage[myImgCount]);
+
+            if(!numberArray.contains(arraImagRtage[i])){
+                numberArray.add(arraImagRtage[i]);
             }
+        }
+
+
+        if(numberArray.size()<range+1){
+            for( int i = 0; i < range; ++i)
+            {
+                if(!numberArray.contains(arraImagRtage[i])){
+                    numberArray.add(arraImagRtage[i]);
+                }
+            }
+
         }
 
         return numberArray;
     }
+
+
+//    public  ArrayList<Integer> getDifficultData() {
+//
+//        for( int i = 0; i < range; ++i)
+//        {
+//            myImgCount = random.nextInt(range);
+//            if(!numberArray.contains(arraImagRtage[myImgCount])){
+//                numberArray.add(arraImagRtage[myImgCount]);
+//            }
+//        }
+//
+//        return numberArray;
+//    }
 }

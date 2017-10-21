@@ -231,14 +231,11 @@ public class BaseActivity extends AppCompatActivity {
         refresh.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                Long mmm =Long.parseLong(timerText.getText().toString());
-                Long test =secondsRemaining  * 1000+timer_pius   * 1000;
+                 Long pluse_time =secondsRemaining  * 1000+timer_pius   * 1000;
                 if(secondsRemaining<50){
-                    Toast.makeText(getApplicationContext(),test+"",Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(getApplicationContext(),pluse_time+"",Toast.LENGTH_LONG).show();
                     countDownTimer.cancel();
-                    countDownTimer = new MyCountDownTimer( test, interval);
+                    countDownTimer = new MyCountDownTimer( pluse_time, interval);
                     countDownTimer.start();
                 }else {
                     Toast.makeText(getApplicationContext(),"time",Toast.LENGTH_LONG).show();

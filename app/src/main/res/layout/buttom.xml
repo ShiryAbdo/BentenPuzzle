@@ -11,9 +11,9 @@
         android:textAllCaps="false"
         android:textColor="#ffffff"
         android:id="@+id/btnClose"
-        android:layout_width="@dimen/_50sdp"
+        android:layout_width="@dimen/_40sdp"
         android:background="@drawable/shap"
-        android:layout_height="@dimen/_50sdp"/>
+        android:layout_height="@dimen/_40sdp"/>
         <Button
             android:id="@+id/dismis"
             android:layout_width="@dimen/_15sdp"

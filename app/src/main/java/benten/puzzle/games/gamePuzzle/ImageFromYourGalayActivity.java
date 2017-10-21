@@ -225,6 +225,8 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
                     @Override
                     public void onClick(View view) {
                         popupWindow.dismiss();
+                        selectImage();
+
                     }
                 });
 

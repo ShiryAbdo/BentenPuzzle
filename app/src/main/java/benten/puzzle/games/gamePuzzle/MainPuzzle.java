@@ -148,7 +148,11 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
         getActivity().findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
                 shuffle();
+
 
             }
         });

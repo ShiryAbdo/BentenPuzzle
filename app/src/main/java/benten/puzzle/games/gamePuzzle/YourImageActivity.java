@@ -253,6 +253,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
                     @Override
                     public void onClick(View view) {
                         popupWindow.dismiss();
+                        cameraIntent();
                     }
                 });
 
@@ -599,8 +600,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
             case get_photo_with_came:
                 setContentView(view);
-                Toast.makeText(getApplicationContext(),"camera",Toast.LENGTH_LONG).show();
-                cameraIntent();
+                 cameraIntent();
                 return true;
 
 

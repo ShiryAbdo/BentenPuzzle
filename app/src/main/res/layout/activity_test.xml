@@ -40,6 +40,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:gravity="end"
+            android:id="@+id/puls"
             android:layout_gravity="end"
             android:layout_height="wrap_content">
 
@@ -51,6 +52,7 @@
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
                 android:src="@drawable/refresh"/>
+
 
             <ImageView
                 android:visibility="gone"

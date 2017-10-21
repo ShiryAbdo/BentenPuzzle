@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -34,7 +35,7 @@ public class BaseActivity extends AppCompatActivity {
     Bundle bundle;
     String catogery ;
     Button showImage  ;
-    ImageView next ,refresh;
+    ImageView next ;
 
     int imageSourse ;
     EasyData easyData ;
@@ -67,8 +68,10 @@ public class BaseActivity extends AppCompatActivity {
     private final long interval = 1 * 1000;
     TextView  scoret,numberOfImage , timerText ,total_score ,total_image ,last_time;
     FrameLayout fragment_container ;
-    LinearLayout next_layout ;
-
+    LinearLayout next_layout ,puls;
+    ImageView refresh ;
+    long secondsRemaining  ,mTimeRemaining;
+   long timer_pius = 20  ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +88,14 @@ public class BaseActivity extends AppCompatActivity {
         total_image= (TextView)findViewById(R.id.total_image);
         last_time=(TextView)findViewById(R.id.last_time);
         next_layout =(LinearLayout)findViewById(R.id.next_layout);
+        refresh =(ImageView)findViewById(R.id.refresh);
+        puls=(LinearLayout)findViewById(R.id.puls);
 //        next_layout.animate().alpha(0.0f);
         countDownTimer = new MyCountDownTimer(startTime, interval);
         countDownTimer.start();
         timerHasStarted = true;
         timerText.setText(String.valueOf(startTime / 1000));
+//        Toast.makeText(getApplicationContext(),mTimeRemaining+"this",Toast.LENGTH_LONG).show();
 
 
 
@@ -119,7 +125,7 @@ public class BaseActivity extends AppCompatActivity {
 
         }
 
-        Toast.makeText(this,"couunt:  "+count,Toast.LENGTH_LONG).show();
+//        Toast.makeText(this,"couunt:  "+count,Toast.LENGTH_LONG).show();
 //         scoret.setText(score+"");
 
 
@@ -214,10 +220,35 @@ public class BaseActivity extends AppCompatActivity {
         scoret.setText(count+"");
         score_nu= ++count;
         total_score.setText(score_nu+"");
+
         number = images.size() - count;
         int range = images.size();
-        total_image.setText("You finish:   "+count +"..."+"From:   "+range);
+        total_image.setText("You finish:   "+count +"  "+"From:   "+range);
         last_time.setText(timerText.getText());
+        if(refresh.isClickable()){
+
+        }
+        refresh.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                Long mmm =Long.parseLong(timerText.getText().toString());
+                Long test =secondsRemaining  * 1000+timer_pius   * 1000;
+                if(secondsRemaining<50){
+                    Toast.makeText(getApplicationContext(),test+"",Toast.LENGTH_LONG).show();
+
+                    countDownTimer.cancel();
+                    countDownTimer = new MyCountDownTimer( test, interval);
+                    countDownTimer.start();
+                }else {
+                    Toast.makeText(getApplicationContext(),"time",Toast.LENGTH_LONG).show();
+
+                }
+
+                return false;
+            }
+        });
+
 
 
 
@@ -429,9 +460,10 @@ public class BaseActivity extends AppCompatActivity {
         @Override
 
         public void onTick(long millisUntilFinished) {
+            mTimeRemaining = millisUntilFinished;
 
 
-            long secondsRemaining = millisUntilFinished / 1000 + 1;
+            secondsRemaining = millisUntilFinished / 1000 + 1;
             last_time.setText(Long.toString(secondsRemaining));
             timerText.setText(Long.toString(secondsRemaining));
             if (secondsRemaining <= 10) {

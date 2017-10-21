@@ -384,6 +384,7 @@ public class SlidePuzzleView extends View {
     if (activiy instanceof BaseActivity){
         final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
         dialog.setContentView(R.layout.one_image);
+        ((BaseActivity) activiy).countDownTimer.cancel();
 
 
 
@@ -424,9 +425,6 @@ public class SlidePuzzleView extends View {
                 dialogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
-
                         dialog.dismiss();
                     }
                 });
@@ -437,9 +435,6 @@ public class SlidePuzzleView extends View {
             if (activiy instanceof  YourImageActivity ){
                 final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
                 dialog.setContentView(R.layout.one_image);
-
-
-
                 ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
                 imagee.setImageResource(R.drawable.icone);
 
@@ -448,9 +443,6 @@ public class SlidePuzzleView extends View {
                 dialogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
-
                         dialog.dismiss();
                     }
                 });

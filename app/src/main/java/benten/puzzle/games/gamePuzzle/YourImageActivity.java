@@ -1,6 +1,7 @@
 package benten.puzzle.games.gamePuzzle;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -595,7 +596,23 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
                 return true;
 
             case removePhoto:
+                popupWindow.dismiss();
                 ((ViewGroup)view.getParent()).removeView(view);
+
+                final Dialog dialog = new Dialog(YourImageActivity.this, R.style.custom_dialog_theme);
+                dialog.setContentView(R.layout.popup_capture);
+                Button dialogButton = (Button) dialog.findViewById(R.id.btnClose);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cameraIntent();
+                        setContentView(view);
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
                 return true;
 
             case get_photo_with_came:

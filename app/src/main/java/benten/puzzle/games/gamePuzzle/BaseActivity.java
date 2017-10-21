@@ -63,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
     public TextView text;
 
     private final long startTime = 100 * 1000;
-    int score_nu ,number ;
+    int score_nu ,number  ,rang;
 
     private final long interval = 1 * 1000;
     TextView  scoret,numberOfImage , timerText ,total_score ,total_image ,last_time;
@@ -125,7 +125,7 @@ public class BaseActivity extends AppCompatActivity {
 
         }
 
-//        Toast.makeText(this,"couunt:  "+count,Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"couunt:  "+count,Toast.LENGTH_LONG).show();
 //         scoret.setText(score+"");
 
 
@@ -135,6 +135,7 @@ public class BaseActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(Color.WHITE);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setLogo(R.drawable.icone);
+
 
 
 
@@ -154,30 +155,23 @@ public class BaseActivity extends AppCompatActivity {
             imageSourse=images.get(count);
             int number =images.size()-count;
             int range = images.size();
-            numberOfImage.setText(number+"");
+
 
         }if(catogery.equals("Medium")){
             toolbar.setTitle(" "+catogery);
             images=mediumData.getMediumData();
             imageSourse=images.get(count);
-            int number =images.size()-count;
-            int range = images.size();
-            numberOfImage.setText(number+"");
+
 
         }if(catogery.equals("Hard")){
             toolbar.setTitle(" "+catogery);
             images=hardData.getHardData();
             imageSourse=images.get(count);
-            int number =images.size()-count;
-            int range = images.size();
-            numberOfImage.setText(number+"");
         }if(catogery.equals("Difficult")) {
             toolbar.setTitle(" "+catogery);
             images =difficultData.getDifficultData();
             imageSourse = images.get(count);
-            int number =images.size()-count;
-            int range = images.size();
-            numberOfImage.setText(number+"");
+
         }
 
 
@@ -218,12 +212,13 @@ public class BaseActivity extends AppCompatActivity {
 
         total_score =(TextView)findViewById(R.id.total_score);
         scoret.setText(count+"");
-        score_nu= ++count;
+        Toast.makeText(getApplicationContext(),score_nu+"",Toast.LENGTH_LONG).show();
         total_score.setText(score_nu+"");
-
         number = images.size() - count;
-        int range = images.size();
-        total_image.setText("You finish:   "+count +"  "+"From:   "+range);
+        rang = images.size();
+        numberOfImage.setText(rang+"/"+(count+1));
+        total_score.setText((count+1)+"");
+        total_image.setText("You finish:   "+(count+1)+"  "+"From:   "+rang);
         last_time.setText(timerText.getText());
         if(refresh.isClickable()){
 
@@ -255,23 +250,15 @@ public class BaseActivity extends AppCompatActivity {
 
                 countDownTimer.cancel();
                 countDownTimer.start();
-
-
-                if(imageSourse==images.size()){
-
-
-                }else{}
-                MainPuzzle newFragment = new MainPuzzle();
-                Bundle args = new Bundle();
-                args.putString("catogery", catogery);
+                Intent intent = new Intent(BaseActivity.this,BaseActivity.class);
                 if(count==images.size()){
                     // custom dialog
                     final Dialog dialog = new Dialog(context, R.style.custom_dialog_theme);
                     dialog.setContentView(R.layout.dialog_layout);
                     TextView text =(TextView)dialog.findViewById(R.id.text);
                     text.setText("Congratulations you finish"+" "+catogery+" "+"Level");
-
                     editor.putBoolean("frist_time" ,true );
+                    editor.putInt("count" ,0);
                     editor.putInt("score" ,0);
                     editor.putString(catogery,"Easy");
                     editor.commit();
@@ -291,28 +278,37 @@ public class BaseActivity extends AppCompatActivity {
 
                     dialog.show();
                 }else{
-                    numberOfImage.setText(number+"");
-                    scoret.setText(score_nu+"");
+                    MainPuzzle newFragment = new MainPuzzle();
+                    Bundle args = new Bundle();
+                    args.putString("catogery", catogery);
+                    score_nu= ++count;
+                    count=score_nu;
+                    scoret.setText(count+"");
+                    numberOfImage.setText(rang+"/"+(count+1));
+                    total_score.setText((count+1)+"");
+                    total_image.setText("You finish:   "+(count+1)+"  "+"From:   "+rang);
+                    Toast.makeText(getApplicationContext(),""+score_nu,Toast.LENGTH_LONG).show();
                     editor.putBoolean("frist_time" ,false );
                     editor.putInt("count" ,score_nu);
-                    editor.putInt("score" ,nexti);
+                    editor.putInt("score" ,score_nu);
                     editor.commit();
-                    imageSourse=images.get(nexti);
-                    args.putInt("image",images.get(nexti));
+                    imageSourse=images.get(score_nu);
+                    args.putInt("image",images.get(score_nu));
+                    newFragment.setArguments(args);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+
+                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.addToBackStack(null);
+
+                    // Commit the transaction
+                    transaction.commit();
                 }
 
-                newFragment.setArguments(args);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
-                fab.setVisibility(View.GONE);
+                next_layout.setVisibility(View.GONE);
                 fragment_container.setVisibility(View.VISIBLE);
 
 
@@ -472,5 +468,13 @@ public class BaseActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+     countDownTimer.cancel();
+
+        super.onPause();
     }
 }

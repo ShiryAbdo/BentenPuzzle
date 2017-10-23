@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 
 import benten.puzzle.games.R;
+import benten.puzzle.games.ui.MainCircleActivity;
 import devlight.io.library.ntb.NavigationTabBar;
 
 import static benten.puzzle.games.R.id.action_refresh;
@@ -832,5 +833,14 @@ public class ImageFromYourGalayActivity extends AppCompatActivity implements Med
     @Override
     public void onTabReselected(android.support.v7.app.ActionBar.Tab tab, FragmentTransaction ft) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        pup.dismiss();
+         Intent intent = new Intent(ImageFromYourGalayActivity.this,   MainCircleActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

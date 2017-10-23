@@ -62,7 +62,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public TextView text;
 
-    private final long startTime = 100 * 1000;
+    private long startTime = 100 * 1000;
     int score_nu ,number  ,rang;
 
     private final long interval = 1 * 1000;
@@ -71,7 +71,7 @@ public class BaseActivity extends AppCompatActivity {
     LinearLayout next_layout ,puls;
     ImageView refresh ;
     long secondsRemaining  ,mTimeRemaining;
-   long timer_pius = 20  ;
+   long timer_pius = 5  ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +125,7 @@ public class BaseActivity extends AppCompatActivity {
 
         }
 
-        Toast.makeText(this,"couunt:  "+count,Toast.LENGTH_LONG).show();
+//        Toast.makeText(this,"couunt:  "+count,Toast.LENGTH_LONG).show();
 //         scoret.setText(score+"");
 
 
@@ -212,13 +212,13 @@ public class BaseActivity extends AppCompatActivity {
 
         total_score =(TextView)findViewById(R.id.total_score);
         scoret.setText(count+"");
-        Toast.makeText(getApplicationContext(),score_nu+"",Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(),score_nu+"",Toast.LENGTH_LONG).show();
         total_score.setText(score_nu+"");
         number = images.size() - count;
         rang = images.size();
         numberOfImage.setText(rang+"/"+(count+1));
         total_score.setText((count+1)+"");
-        total_image.setText("You finish:   "+(count+1)+"  "+"From:   "+rang);
+        total_image.setText("Total:   "+(count+1)+"  "+"  / "+rang);
         last_time.setText(timerText.getText());
         if(refresh.isClickable()){
 
@@ -226,14 +226,14 @@ public class BaseActivity extends AppCompatActivity {
         refresh.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                 Long pluse_time =secondsRemaining  * 1000+timer_pius   * 1000;
+                 Long pluse_time =(secondsRemaining +timer_pius )  * 1000;
                 if(secondsRemaining<50){
-                    Toast.makeText(getApplicationContext(),pluse_time+"",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),pluse_time+"   "+" that is time",Toast.LENGTH_LONG).show();
                     countDownTimer.cancel();
                     countDownTimer = new MyCountDownTimer( pluse_time, interval);
                     countDownTimer.start();
                 }else {
-                    Toast.makeText(getApplicationContext(),"time",Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(),"time",Toast.LENGTH_LONG).show();
 
                 }
 
@@ -241,8 +241,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-
-
+ int yyy = images.size();
+//  Toast.makeText(getApplicationContext(),yyy+"", Toast.LENGTH_LONG).show();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,8 +250,8 @@ public class BaseActivity extends AppCompatActivity {
 
                 countDownTimer.cancel();
                 countDownTimer.start();
-                Intent intent = new Intent(BaseActivity.this,BaseActivity.class);
-                if(count==images.size()){
+                 if(count==images.size()-1){
+                     countDownTimer.cancel();
                     // custom dialog
                     final Dialog dialog = new Dialog(context, R.style.custom_dialog_theme);
                     dialog.setContentView(R.layout.dialog_layout);
@@ -264,8 +264,6 @@ public class BaseActivity extends AppCompatActivity {
                     editor.commit();
                     newEditore.putString(catogery,catogery);
                     newEditore.commit();
-
-
                     Button dialogButton = (Button) dialog.findViewById(R.id.backtoMenu);
                     // if button is clicked, close the custom dialog
                     dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -273,6 +271,7 @@ public class BaseActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             Intent intent = new Intent(getApplicationContext(),MainCircleActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     });
 
@@ -287,7 +286,7 @@ public class BaseActivity extends AppCompatActivity {
                     numberOfImage.setText(rang+"/"+(count+1));
                     total_score.setText((count+1)+"");
                     total_image.setText("You finish:   "+(count+1)+"  "+"From:   "+rang);
-                    Toast.makeText(getApplicationContext(),""+score_nu,Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(),""+score_nu,Toast.LENGTH_LONG).show();
                     editor.putBoolean("frist_time" ,false );
                     editor.putInt("count" ,score_nu);
                     editor.putInt("score" ,score_nu);
@@ -457,7 +456,7 @@ public class BaseActivity extends AppCompatActivity {
 
 
             secondsRemaining = millisUntilFinished / 1000 + 1;
-            last_time.setText(Long.toString(secondsRemaining));
+            last_time.setText(Long.toString(100-secondsRemaining)+"  "+ " Seconds ");
             timerText.setText(Long.toString(secondsRemaining));
             if (secondsRemaining <= 10) {
                 timerText.setTextColor(getResources().getColor(R.color.red));
@@ -470,11 +469,32 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
+
+
+    @Override
+    protected void onResume() {
+        next_layout.setVisibility(View.VISIBLE);
+        Toast.makeText(getApplicationContext(), secondsRemaining+"onResume",Toast.LENGTH_LONG).show();
+        countDownTimer.cancel();
+        countDownTimer = new MyCountDownTimer(startTime, interval);
+        countDownTimer.start();
+//        Toast.makeText(getApplicationContext(),"onResume",Toast.LENGTH_LONG).show();
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        Toast.makeText(getApplicationContext(),secondsRemaining+"on pause",Toast.LENGTH_LONG).show();
+        super.onRestart();
+    }
+
     @Override
     protected void onPause() {
+        startTime=secondsRemaining * 1000;
+        Toast.makeText(getApplicationContext(),secondsRemaining+"on pause",Toast.LENGTH_LONG).show();
+        countDownTimer.cancel();
+        next_layout.setVisibility(View.GONE);
         super.onPause();
-     countDownTimer.cancel();
 
-        super.onPause();
     }
 }

@@ -22,12 +22,13 @@ public class EasyData {
     int [] arraImagRtage ={
             R.drawable.cute,
             R.drawable.batote,
-            R.drawable.esy_one,
-            R.drawable.boys,
-            R.drawable.esy_two,
-            R.drawable.garil,
-            R.drawable.s
-            ,R.drawable.esy_three};
+//            R.drawable.esy_one,
+//            R.drawable.boys,
+//            R.drawable.esy_two,
+//            R.drawable.garil,
+//            R.drawable.s
+//            ,R.drawable.
+ };
 
 
     int range = arraImagRtage.length;

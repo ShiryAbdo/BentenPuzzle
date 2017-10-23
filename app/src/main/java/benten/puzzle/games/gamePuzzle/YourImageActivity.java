@@ -1,9 +1,13 @@
 package benten.puzzle.games.gamePuzzle;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,11 +17,14 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
+import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -83,6 +90,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     Bitmap bitmap ;
     Bitmap thumbnail;
+    Bitmap rotatedBitmap ;
 
     private SlidePuzzleView view;
     private SlidePuzzle slidePuzzle;
@@ -236,51 +244,67 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
             }
         });
 
+        final Dialog dialog = new Dialog(YourImageActivity.this, R.style.custom_dialog_theme);
+        dialog.setContentView(R.layout.popup_capture);
+        Button dialogButton = (Button) dialog.findViewById(R.id.btnClose);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(view);
 
-
-        view.post(new Runnable() {
-            public void run() {
-                popupView = View.inflate(getApplicationContext(), R.layout.popup_capture,null);
-                popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-
-                mCurrentX = 20;
-                mCurrentY = 50;
-
-                popupWindow.showAtLocation(view, Gravity.CENTER, mCurrentX, mCurrentY);
-                Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
-
-                btnClose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        popupWindow.dismiss();
-                        cameraIntent();
-                    }
-                });
-
-
-                popupView.setOnTouchListener(new View.OnTouchListener() {
-                    private float mDx;
-                    private float mDy;
-
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        int action = event.getAction();
-                        if (action == MotionEvent.ACTION_DOWN) {
-                            mDx = mCurrentX - event.getRawX();
-                            mDy = mCurrentY - event.getRawY();
-                        } else
-                        if (action == MotionEvent.ACTION_MOVE) {
-                            mCurrentX = (int) (event.getRawX() + mDx);
-                            mCurrentY = (int) (event.getRawY() + mDy);
-                            popupWindow.update(mCurrentX, mCurrentY, -1, -1);
-                        }
-                        return true;
-                    }
-                });
-
+                cameraIntent();
+                dialog.dismiss();
             }
         });
+
+        dialog.show();
+
+
+
+//        view.post(new Runnable() {
+//            public void run() {
+//                popupView = View.inflate(getApplicationContext(), R.layout.popup_capture,null);
+//                popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+//
+//
+//                mCurrentX = 20;
+//                mCurrentY = 50;
+//
+//                popupWindow.showAtLocation(view, Gravity.CENTER, mCurrentX, mCurrentY);
+//                Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
+//
+//                btnClose.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        popupWindow.dismiss();
+//                        cameraIntent();
+//                    }
+//                });
+//
+//
+//                popupView.setOnTouchListener(new View.OnTouchListener() {
+//                    private float mDx;
+//                    private float mDy;
+//
+//                    @Override
+//                    public boolean onTouch(View v, MotionEvent event) {
+//                        int action = event.getAction();
+//                        if (action == MotionEvent.ACTION_DOWN) {
+//                            mDx = mCurrentX - event.getRawX();
+//                            mDy = mCurrentY - event.getRawY();
+//                        } else
+//                        if (action == MotionEvent.ACTION_MOVE) {
+//                            mCurrentX = (int) (event.getRawX() + mDx);
+//                            mCurrentY = (int) (event.getRawY() + mDy);
+//                            popupWindow.update(mCurrentX, mCurrentY, -1, -1);
+//                        }
+//                        return true;
+//                    }
+//                });
+//
+//            }
+//        });
 
         shuffle();
 
@@ -437,7 +461,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         portrait = bitmap.getWidth() < bitmap.getHeight();
 
         view.setBitmap(bitmap);
-        setPuzzleSize(Math.min(puzzleWidth, puzzleHeight), true);
+        setPuzzleSize(Math.max(puzzleWidth, puzzleHeight), true);
 
 //        setRequestedOrientation(portrait ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
@@ -479,8 +503,19 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
     private void onCaptureImageResult(Intent data) {
         thumbnail = (Bitmap) data.getExtras().get("data");
+
+//        try {
+//            thumbnail = MediaStore.Images.Media.getBitmap(
+//                    getContentResolver(), imageUri);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        if(thumbnail!=null){
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        }
+
+
 
         File destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
@@ -496,10 +531,32 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Uri tempUri = getImageUri(getApplicationContext(), thumbnail);
+        // CALL THIS METHOD TO GET THE ACTUAL PATH
+        File finalFile = new File(getRealPathFromURI(tempUri));
+
+
+
+
          setBitmap(thumbnail);
 //        ivImage.setImageBitmap(thumbnail);
     }
 
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
 
     private File getSaveDirectory()
     {
@@ -546,7 +603,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
         if(portrait)
         {
-            newWidth = size;
+            newWidth  = size;
             newHeight = (int) (size * ratio);
         }
         else
@@ -636,8 +693,40 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
     private void cameraIntent()
     {
+//         isStoragePermissionGranted();
+//        ContentValues  values = new ContentValues();
+//        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+//        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+//        imageUri = getContentResolver().insert(
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//        startActivityForResult(intent, REQUEST_CAMERA);
+        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+
+
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("Tage","Permission is granted");
+                return true;
+            } else {
+
+                Log.v("Tag","Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("Tag","Permission is granted");
+            return true;
+        }
     }
 
 
@@ -896,7 +985,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(YourImageActivity.this,   MainCircleActivity.class);
+         Intent intent = new Intent(YourImageActivity.this,   MainCircleActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

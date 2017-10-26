@@ -20,14 +20,66 @@ public class EasyData {
 
 
     int [] arraImagRtage ={
-            R.drawable.cute,
-            R.drawable.batote,
-//            R.drawable.esy_one,
-//            R.drawable.boys,
-//            R.drawable.esy_two,
-//            R.drawable.garil,
-//            R.drawable.s
-//            ,R.drawable.
+            R.drawable.a,
+            R.drawable.e,
+            R.drawable.d,
+            R.drawable.f,
+            R.drawable.g,
+            R.drawable.h,
+            R.drawable.i
+            ,R.drawable.j
+            ,R.drawable.k
+            ,R.drawable.l
+            ,R.drawable.bc
+            ,R.drawable.bd,
+
+
+
+            R.drawable.m,
+            R.drawable.n,
+            R.drawable.o,
+            R.drawable.p,
+            R.drawable.q,
+            R.drawable.r,
+            R.drawable.s
+            ,R.drawable.t
+            ,R.drawable.w
+            ,R.drawable.bc,
+
+
+
+            R.drawable.x,
+            R.drawable.y,
+            R.drawable.z,
+            R.drawable.aa,
+            R.drawable.ab,
+            R.drawable.ac,
+            R.drawable.ad
+            ,R.drawable.ae
+            ,R.drawable.af
+            ,R.drawable.bb,
+
+            R.drawable.ag,
+            R.drawable.ah,
+            R.drawable.ai,
+            R.drawable.aj,
+            R.drawable.ak,
+            R.drawable.al,
+            R.drawable.am
+            ,R.drawable.an
+            ,R.drawable.ao
+            ,R.drawable.ba,
+
+
+            R.drawable.ap,
+            R.drawable.aq,
+            R.drawable.ar,
+            R.drawable.as,
+            R.drawable.at,
+             R.drawable.aw
+            ,R.drawable.ax
+            ,R.drawable.ay
+            ,R.drawable.az,
  };
 
 

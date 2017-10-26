@@ -35,7 +35,7 @@ public class MainCircleActivity extends Activity {
 
 
 	private CircleMenuLayout mCircleMenuLayout;
-	private String[] mItemTexts = new String[] { "Easy", "Medium", "Hard","Difficult", "Capture", "Galary"};
+	private String[] mItemTexts = new String[] { "", "", "","", "", ""};
     String easy ,medium ,hard ,difficult;
     TextDrawable Capture_your_puzzle  ,Easyy ,Medium ,Hard ,Difficult,Your_photo_puzzle,User_Acount;
 
@@ -71,7 +71,7 @@ public class MainCircleActivity extends Activity {
         mItemImgs.add(R.drawable.hard);
         mItemImgs.add(R.drawable.difficult);
         mItemImgs.add(R.drawable.capture);
-        mItemImgs.add(R.drawable.photo);
+        mItemImgs.add(R.drawable.galary);
 
         newImage.add( R.drawable.easy_star);
         newImage.add( R.drawable.medium_star);
@@ -262,15 +262,15 @@ public class MainCircleActivity extends Activity {
         final ImageView rlIcon33 = new ImageView(this);
         final ImageView rlIcon44 = new ImageView(this);
 
-         rlIcon1.setImageDrawable(image1);
-         rlIcon2.setImageDrawable(image2);
-        rlIcon3.setImageDrawable(image3);
-        rlIcon4.setImageDrawable(image4);
-
-        rlIcon11.setImageDrawable(image1);
-        rlIcon22.setImageDrawable(image2);
-        rlIcon33.setImageDrawable(image3);
-        rlIcon44.setImageDrawable(image4);
+//        rlIcon1.setImageDrawable(image1);
+        rlIcon1.setImageResource(R.drawable.easy_small);
+        rlIcon2.setImageResource(R.drawable.hard_smal);
+        rlIcon3.setImageResource(R.drawable.medium_smal);
+        rlIcon4.setImageResource(R.drawable.difficult_smale);
+        rlIcon11.setImageResource(R.drawable.easy_small);
+        rlIcon22.setImageResource(R.drawable.hard_smal);
+        rlIcon33.setImageResource(R.drawable.medium_smal);
+        rlIcon44.setImageResource(R.drawable.difficult_smale);
 
 		mCircleMenuLayout.setOnMenuItemClickListener(new CircleMenuLayout.OnMenuItemClickListener()
 		{
@@ -287,7 +287,7 @@ public class MainCircleActivity extends Activity {
                     case 0:
                         intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",easy);
-                        startActivity(intent);
+                         startActivity(intent);
                         finish();
 
 
@@ -309,6 +309,7 @@ public class MainCircleActivity extends Activity {
                     case 3:
                           intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",difficult);
+                        intent.putExtra("DEFAULT_SIZE",5);
                         startActivity(intent);
                         finish();
                         break;

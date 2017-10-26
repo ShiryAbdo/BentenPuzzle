@@ -2,10 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+      android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context="benten.puzzle.games.gamePuzzle.BaseActivity"
+    android:id="@+id/homeLinearLayout"
+     tools:context="benten.puzzle.games.gamePuzzle.BaseActivity"
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar1"
@@ -20,9 +22,9 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/_15sdp"
-            android:padding="@dimen/_5sdp"
+            android:padding="@dimen/_1sdp"
             android:src="@drawable/refresh"
-            android:text="score:"
+            android:text="Score: "
             android:textColor="#ffffff"
             android:textStyle="bold" />
 
@@ -33,7 +35,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/_15sdp"
-            android:padding="@dimen/_5sdp"
+            android:padding="@dimen/_1sdp"
             android:src="@drawable/refresh"
             android:text="score"
             android:textColor="#ffffff"
@@ -49,20 +51,13 @@
                 android:gravity="end"
                 android:id="@+id/refresh"
                 android:padding="@dimen/_2sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_width="@dimen/_25sdp"
-                android:layout_height="@dimen/_25sdp"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:src="@drawable/refresh"/>
 
 
-            <ImageView
-                android:visibility="gone"
-                android:gravity="end"
-                android:padding="@dimen/_5sdp"
-                android:id="@+id/next"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/next"/>
+
 
         </LinearLayout>
 
@@ -71,33 +66,36 @@
     </android.support.v7.widget.Toolbar>
 
 <LinearLayout
-    android:layout_marginTop="@dimen/_10sdp"
-    android:layout_marginBottom="@dimen/_5sdp"
     android:gravity="center"
-    android:layout_margin="@dimen/_5sdp"
-      android:layout_width="match_parent"
+     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <TextView
-        android:layout_weight=".5"
-        android:layout_width="wrap_content"
-        android:text="photos : "
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_weight=".5"
-        android:layout_width="wrap_content"
-        android:text="hello"
         android:id="@+id/numberOfImage"
-         android:padding="@dimen/_5sdp"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_weight="2"
+        android:drawableLeft="@drawable/imag_galary"
+        android:drawablePadding="@dimen/_2sdp"
+        android:gravity="left|center"
+        android:text="Image size"
+        android:textColor="#000"
+
+        />
+
     <Button
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         android:layout_width="@dimen/_90sdp"
         android:text="Show Image"
         android:layout_weight=".5"
+        android:padding="0dp"
         android:textAllCaps="false"
         android:textColor="#13734d"
         android:id="@+id/showImage"
         android:textAlignment="center"
-
         android:background="@drawable/rounded_border"
         android:layout_height="wrap_content" />
 
@@ -119,96 +117,192 @@
 
 
     <FrameLayout
-        android:layout_margin="@dimen/_2sdp"
+          android:layout_margin="@dimen/_2sdp"
         android:background="@drawable/rounded"
         android:padding="@dimen/_8sdp"
-        android:id="@+id/fragment_container"
+          android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/_320sdp" />
+
+
+
+    <!-- view for AdMob Banner Ad -->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+           android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        ads:adSize="BANNER"
+         ads:adUnitId="@string/banner_ad_unit_id" />
     <LinearLayout
-        android:background="@drawable/rounded_border"
-        android:padding="@dimen/_10sdp"
+        android:background="@drawable/background_mine"
         android:layout_marginTop="@dimen/_10sdp"
-        android:layout_margin="@dimen/_10sdp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:visibility="visible"
         android:animateLayoutChanges="true"
         android:id="@+id/next_layout"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
+             android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginTop="@dimen/_25sdp"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                     android:padding="@dimen/_1sdp"
+                    android:src="@drawable/refresh"
+                    android:text="Score: "
+                    android:textColor="#000"
+                    android:textSize="@dimen/_20sdp"
+                      />
+
+                <TextView
+                    android:id="@+id/score_again"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textColor="#000"
+                    android:textSize="@dimen/_20sdp"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total" />
+            </LinearLayout>
+
+
+        <LinearLayout
+
             android:padding="@dimen/_5sdp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <TextView
-                android:layout_weight="1"
-                android:textColor="#000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Score :"
-                android:textSize="@dimen/_25sdp"/>
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="score"
                 android:id="@+id/total_score"
-                android:textSize="@dimen/_25sdp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/_5sdp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total"
-                android:textColor="#000"
-                android:id="@+id/total_image"
-                android:textSize="@dimen/_25sdp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/_5sdp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                  android:layout_width="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/timer"
-                  android:layout_height="wrap_content"/>
-            <TextView
-                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00"
-                android:layout_gravity="center"
+                android:drawableLeft="@drawable/cup"
+                android:drawablePadding="@dimen/_5sdp"
                 android:gravity="center"
-                android:id="@+id/last_time"
-                android:textSize="@dimen/_25sdp"/>
+                android:text="score"
+                android:textAlignment="center"
+                android:textColor="#911c1c"
+                android:textSize="@dimen/_20sdp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginRight="@dimen/_30sdp"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/total_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/imag_galary"
+                android:drawablePadding="@dimen/_5sdp"
+                android:gravity="center"
+                android:text="Total"
+                android:textAlignment="center"
+                 android:textColor="#000"
+                 android:textSize="@dimen/_20sdp" />
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp">
+
+
+
+                <TextView
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableLeft="@drawable/timer"
+                    android:id="@+id/last_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="#000"
+                    android:textSize="@dimen/_20sdp"
+                    android:text="00:00"
+                    />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginRight="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:id="@+id/recyclerview1"
+                android:scrollbars="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_marginRight="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:padding="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/BackTomenu"
+                android:layout_weight=".5"
+                android:layout_gravity="start"
+                android:visibility="visible"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_60sdp"
+               android:background="@drawable/home_icon" />
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/fab"
+                android:layout_gravity="end"
+                android:layout_weight=".5"
+                android:visibility="visible"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:background="@drawable/go_next" />
+
+
+        </LinearLayout>
+
         </LinearLayout>
 
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:visibility="visible"
-            android:padding="@dimen/_10sdp"
-            android:layout_width="@dimen/_70sdp"
-            android:layout_height="@dimen/_100sdp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/next" />
+
+
+
+
 
 
     </LinearLayout>

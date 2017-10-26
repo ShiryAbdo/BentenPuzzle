@@ -60,7 +60,7 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
     protected static final String FILENAME_PHOTO_DIR = FILENAME_DIR + "/photo";
     protected static final String FILENAME_PHOTO = "photo.jpg";
 
-    protected static final int DEFAULT_SIZE = 3;
+    protected static int DEFAULT_SIZE = 3;
 
     private SlidePuzzleView view;
     private SlidePuzzle slidePuzzle;
@@ -86,6 +86,7 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
     BaseActivity baseActivity ;
     PopupWindow popupWindow;
     View popupView;
+    int size ;
     int mCurrentX,mCurrentY;
 
 
@@ -95,6 +96,10 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
                              Bundle savedInstanceState) {
         String strtext = getArguments().getString("catogery");
         int image =getArguments().getInt("image");
+
+            size=getArguments().getInt("DEFAULT_SIZE");
+
+        DEFAULT_SIZE=size;
         baseActivity =new BaseActivity();
 
         getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -124,38 +129,55 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
 //        Toast.makeText(getActivity(),strtext,Toast.LENGTH_LONG).show();
 
 
-        if(strtext.equals("Easy")){
-            images=easyData.getEasyDataArray();
-            imageSourse=images.get(0);
-        }if(strtext.equals("Medium")){
-            images=mediumData.getMediumData();
-            imageSourse=images.get(0);
-        }if(strtext.equals("Hard")){
-            images=hardData.getHardData();
-            imageSourse=images.get(0);
-        }if(strtext.equals("Difficult")) {
-            images =difficultData.getDifficultData();
-            imageSourse = images.get(0);
-        }
+//        if(strtext.equals("Easy")){
+//            images=easyData.getEasyDataArray();
+//            imageSourse=images.get(0);
+//        }if(strtext.equals("Medium")){
+//            images=mediumData.getMediumData();
+//            imageSourse=images.get(0);
+//        }if(strtext.equals("Hard")){
+//            images=hardData.getHardData();
+//            imageSourse=images.get(0);
+//        }if(strtext.equals("Difficult")) {
+//            images =difficultData.getDifficultData();
+//            imageSourse = images.get(0);
+//        }
 
         Uri path = Uri.parse("android.resource://benten.puzzle.games/" + image);
 
         loadBitmap(path);
-        BaseActivity baseActivity = new BaseActivity();
+
         boolean solved =  baseActivity.chhh;
+        if(baseActivity.check_boolen==true){
+            Toast.makeText(getActivity(),"true",Toast.LENGTH_LONG).show();
+            shuffle();
+        }
 
-        getActivity().findViewById(R.id.next).setEnabled(false);
-        getActivity().findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-
-                shuffle();
-
-
-            }
-        });
+         getActivity().findViewById(R.id.last_time);
+        getActivity().findViewById(R.id.timerText);
+//        getActivity().findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                final BaseActivity baseActivity = new BaseActivity();
+//
+////
+////                 final Dialog dialog = new Dialog(getActivity(), R.style.custom_dialog_theme);
+////                dialog.setContentView(R.layout.plus_time);
+////                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+////                dialogButton.setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View v) {
+////                          baseActivity.showDialoge();
+////                        shuffle();
+////                        dialog.dismiss();
+////
+////                    }
+////                });
+////
+////                dialog.show();
+//
+//            }
+//        });
 
 
         // Inflate the layout for this fragment
@@ -371,7 +393,7 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
             {
                 String[] tileStrings = s.split("\\;");
 
-                if(tileStrings.length / size > 1)
+                if(tileStrings.length / size > 0)
                 {
                     setPuzzleSize(size, false);
                     slidePuzzle.init(puzzleWidth, puzzleHeight);

@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
@@ -36,8 +37,8 @@ public class SlidePuzzleView extends View {
     private static final long VIBRATE_MATCH = 50;
     private static final long VIBRATE_SOLVED = 250;
 
-    private static final int COLOR_SOLVED = 0xff000000;
-    private static final int COLOR_ACTIVE = 0xff303030;
+    private static final int COLOR_SOLVED = 0xFFFFFFFF ;
+    private static final int COLOR_ACTIVE =  Color.TRANSPARENT ;
 
     private Bitmap bitmap;
     private Rect sourceRect;
@@ -169,7 +170,7 @@ public class SlidePuzzleView extends View {
 
         int[] originalTiles = slidePuzzle.getTiles();
 
-        if(tiles == null || tiles.length != originalTiles.length)
+        if( tiles == null || tiles.length != originalTiles.length || tiles.length  == 0 )
         {
             tiles = new int[originalTiles.length];
         }
@@ -193,9 +194,12 @@ public class SlidePuzzleView extends View {
 
         int delta = !dragInTarget ? 0 : (SlidePuzzle.DIRECTION_X[dragDirection] + puzzleWidth *  SlidePuzzle.DIRECTION_Y[dragDirection]) * dragging.size();
         int shownHandleLocation = slidePuzzle.getHandleLocation() + delta;
-        tiles[shownHandleLocation] = tiles.length - 1;
+//        tiles[shownHandleLocation] = tiles.length ;
+
+        tiles[shownHandleLocation] = tiles.length-1 ;
 
         int emptyTile = tiles.length - 1;
+//        int emptyTile = tiles.length ;
 
         for(int i = 0; i < tiles.length; i++)
         {
@@ -376,32 +380,32 @@ public class SlidePuzzleView extends View {
         invalidate();
 
         if(slidePuzzle.isSolved()) {
-//            onFinish();
 
-            BaseActivity baseActivity = null;
-            ImageFromYourGalayActivity imageFromYourGalayActivity = new ImageFromYourGalayActivity();
-            YourImageActivity  yourImageActivity = new YourImageActivity();
-    if (activiy instanceof BaseActivity){
+     if (activiy instanceof BaseActivity){
         final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
         dialog.setContentView(R.layout.one_image);
         ((BaseActivity) activiy).countDownTimer.cancel();
 
 
 
-        ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
+        final ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
         imagee.setImageResource(((BaseActivity) activiy).imageSourse);
 
         Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-        // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
+         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activiy.findViewById(R.id.next).setEnabled(true);
-                activiy.findViewById(R.id.fragment_container).setVisibility(GONE);
-                activiy.findViewById(R.id.next_layout).setVisibility(VISIBLE);
-                activiy.findViewById(R.id.next_layout).invalidate();
-//                activiy.findViewById(R.id.next_layout).notify();
                 ((BaseActivity) activiy).countDownTimer.cancel();
+                 activiy.findViewById(R.id.fragment_container).setVisibility(GONE);
+                ((BaseActivity) activiy).findViewById(R.id.adView).setVisibility(GONE);
+                activiy.findViewById(R.id.next_layout).setVisibility(VISIBLE);
+                activiy.findViewById(R.id.refresh).setEnabled(false);
+//                activiy.findViewById(R.id.homeLinearLayout).setBackgroundResource(R.drawable.background_result);
+                ((BaseActivity) activiy).countDownTimer.cancel();
+                activiy.findViewById(R.id.next_layout).invalidate();
+                ((BaseActivity) activiy).newLevel();
+ //                activiy.findViewById(R.id.next_layout).notify();
+
 
 
                 dialog.dismiss();
@@ -414,11 +418,8 @@ public class SlidePuzzleView extends View {
             if (activiy instanceof ImageFromYourGalayActivity ){
                 final Dialog dialog = new Dialog(contxt, R.style.custom_dialog_theme);
                 dialog.setContentView(R.layout.one_image);
-
-
-
                 ImageView imagee = (ImageView) dialog.findViewById(R.id.image);
-                imagee.setImageResource(R.drawable.icone);
+                imagee.setImageResource(R.drawable.benten);
 
                 Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
                 // if button is clicked, close the custom dialog

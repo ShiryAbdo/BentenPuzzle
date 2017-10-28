@@ -6,17 +6,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import benten.puzzle.games.R;
@@ -32,8 +42,11 @@ public class MainCircleActivity extends Activity {
     SharedPreferences sharedPref_hard;
     SharedPreferences sharedPref_difficult;
 
-
-
+    private int REQUEST_CAMERA = 0 , SELECT_FILE = 1;;
+    private Uri imageUri;
+    Bitmap thumbnail;
+    Bundle bundle = new Bundle();
+ String intentStringNumber ;
 	private CircleMenuLayout mCircleMenuLayout;
 	private String[] mItemTexts = new String[] { "", "", "","", "", ""};
     String easy ,medium ,hard ,difficult;
@@ -60,7 +73,12 @@ public class MainCircleActivity extends Activity {
 //            R.drawable.hard,
 //            R.drawable.hard};
 
-	@Override
+
+
+      FloatingActionMenu rightLowerMenu;
+      FloatingActionMenu rightLoerMenu ;
+    LinearLayout  LinearLayout ;
+    @Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main02);
@@ -81,7 +99,7 @@ public class MainCircleActivity extends Activity {
         newImage.add( R.drawable.vvvv);
 
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
-
+        bundle = new Bundle();
 
 		gg= new ArrayList<>();
         easy="Easy";
@@ -285,7 +303,8 @@ public class MainCircleActivity extends Activity {
 
                 switch (pos) {
                     case 0:
-                        intent = new Intent(MainCircleActivity.this,BaseActivity.class);
+
+                         intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",easy);
                          startActivity(intent);
                         finish();
@@ -301,12 +320,14 @@ public class MainCircleActivity extends Activity {
 
                         break;
                     case 2:
+
                         intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",hard);
                         startActivity(intent);
                         finish();
                         break;
                     case 3:
+
                           intent = new Intent(MainCircleActivity.this,BaseActivity.class);
                         intent.putExtra("catogery",difficult);
                         intent.putExtra("DEFAULT_SIZE",5);
@@ -314,47 +335,41 @@ public class MainCircleActivity extends Activity {
                         finish();
                         break;
                     case 4:
-                        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon11).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon22).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon33).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon44).build(),120,120)
-                                .attachTo(view)
+                        rightLowerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon11).build(),150,150)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon22).build(),150,150)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon33).build(),150,150)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon44).build(),150,150)
+                                      .attachTo(view)
                                 .build();
                         rlIcon11.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
-                                intent.putExtra("DEFAULT_SIZE",3);
-                                startActivity(intent);
-                                finish();
+                                intentStringNumber ="Easy";
+                                cameraIntent();
+                                //Convert to byte array
+
+
 
 
                             }
                         });
                         rlIcon22.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
-                                intent.putExtra("DEFAULT_SIZE",4);
-                                startActivity(intent);
-                                finish();
-
+                                intentStringNumber ="Medium";
+                                cameraIntent();
                             }
                         });
                         rlIcon33.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
-                                intent.putExtra("DEFAULT_SIZE",5);
-                                startActivity(intent);
-                                finish();
+                                intentStringNumber ="Hard";
+                                cameraIntent();
 
                             }
                         });
                         rlIcon44.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
-                                intent.putExtra("DEFAULT_SIZE",7);
-                                startActivity(intent);
-                                finish();
+                                intentStringNumber ="Difficult";
+                                cameraIntent();
 
                             }
                         });
@@ -364,11 +379,9 @@ public class MainCircleActivity extends Activity {
                             @Override
                             public void onMenuOpened(FloatingActionMenu menu) {
 
-
-
 //                                 Rotate the icon of rightLowerButton 45 degrees clockwise
                                 fabIconNew.setRotation(0);
-                                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+                                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 10);
                                 ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
                                 animation.start();
                             }
@@ -389,11 +402,12 @@ public class MainCircleActivity extends Activity {
 
                         break;
                     case 5:
-                         final FloatingActionMenu rightLoerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build(),120,120)
-                                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build(),120,120)
+
+                          rightLoerMenu = new FloatingActionMenu.Builder(MainCircleActivity.this)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build(),150,150)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build(),150,150)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build(),150,150)
+                                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build(),150,150)
 
                                 .attachTo(view)
                                 .build();
@@ -462,7 +476,6 @@ public class MainCircleActivity extends Activity {
                         });
                         break;
 
-
                     default: System.out.println("Invalid month.");break;
                 }
 
@@ -479,4 +492,73 @@ public class MainCircleActivity extends Activity {
 
 
 	}
+
+    private void cameraIntent()
+    {
+//         isStoragePermissionGranted();
+//        ContentValues  values = new ContentValues();
+//        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+//        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+//        imageUri = getContentResolver().insert(
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//        startActivityForResult(intent, REQUEST_CAMERA);
+        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE){
+
+            }else if (requestCode == REQUEST_CAMERA)
+                onCaptureImageResult(data);
+        }
+    }
+
+    private void onCaptureImageResult(Intent data) {
+        thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        if(thumbnail!=null){
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        }
+
+
+
+        File destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        Intent intent = new Intent(getApplicationContext(),YourImageActivity.class);
+        intent.putExtra("image",byteArray);
+        intent.putExtra("DEFAULT_SIZE",3);
+        intent.putExtra("intentStringNumber",intentStringNumber);
+        startActivity(intent);
+        finish();
+
+    }
 }

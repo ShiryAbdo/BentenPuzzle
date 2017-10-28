@@ -6,21 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,21 +30,15 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import benten.puzzle.games.R;
 import benten.puzzle.games.data.Json_data_Interface;
 import benten.puzzle.games.data.RecyclerViewAdapter;
 import benten.puzzle.games.data.json_data;
-import benten.puzzle.games.gameMomery.DifficultData;
 import benten.puzzle.games.gameMomery.EasyData;
-import benten.puzzle.games.gameMomery.HardData;
-import benten.puzzle.games.gameMomery.MediumData;
 import benten.puzzle.games.ui.MainCircleActivity;
-import benten.puzzle.games.user.SplachScreen;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,9 +54,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
     protected static int DEFAULT_SIZE ;
     int imageSourse  ,imagSersrShow;
     EasyData easyData ;
-    MediumData mediumData;
-    HardData hardData ;
-    DifficultData difficultData ;
+
     ArrayList<Integer> images ;
      final Context context = this;
     Toolbar toolbar ;
@@ -88,7 +75,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
     public TextView text;
       public  boolean check_boolen = false ;
 
-    private long startTime = 100 * 1000;
+    private long startTime ;
     long time_longe ;
 
     ArrayList<Long> score_saved_shared;
@@ -104,7 +91,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
    long timer_pius = 5  ;
      AdView adView;
     private InterstitialAd mInterstitialAd;
-    private RewardedVideoAd mAd;
+    private RewardedVideoAd mmmVidio;
  boolean check_pluse =false ;
     Button BackTomenu;
 
@@ -132,8 +119,8 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
         loadInterstitial();
         score_saved_shared =new ArrayList<>();
         data= new ArrayList<>();
-        mAd = MobileAds.getRewardedVideoAdInstance(this);
-        mAd.setRewardedVideoAdListener(this);
+         mmmVidio = MobileAds.getRewardedVideoAdInstance(this);
+         mmmVidio.setRewardedVideoAdListener(this);
 
 
 
@@ -192,9 +179,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
         images = new ArrayList<>();
         easyData= new EasyData();
-        mediumData= new MediumData();
-        hardData=new HardData();
-        difficultData= new DifficultData();
+
          refresh=(ImageView)findViewById(R.id.refresh);
         images=easyData.getEasyDataArray();
         imageSourse=images.get(count);
@@ -216,7 +201,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
             DEFAULT_SIZE=4;
             time_longe= 120;
             startTime=  120 * 1000;
-             Topescore=1200;
+             Topescore=120000;
             sharedPref_score = getApplicationContext().getSharedPreferences(catogery, Context.MODE_PRIVATE);
 //            images=mediumData.getMediumData();
 //            imageSourse=images.get(count);
@@ -227,7 +212,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
             DEFAULT_SIZE=5;
             time_longe= 180;
             startTime=  180 * 1000;
-             Topescore= 18000;
+             Topescore= 1800000;
             sharedPref_score = getApplicationContext().getSharedPreferences(catogery, Context.MODE_PRIVATE);
 //            images=hardData.getHardData();
 //            imageSourse=images.get(count);
@@ -235,8 +220,9 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
             toolbar.setTitle(" "+catogery);
             DEFAULT_SIZE=6;
             time_longe= 240;
-             Topescore= 24000;
+             Topescore= 240000;
             startTime=  240 * 1000;
+             sharedPref_score = getApplicationContext().getSharedPreferences(catogery, Context.MODE_PRIVATE);
 //            images =difficultData.getDifficultData();
 //            imageSourse = images.get(count);
 
@@ -468,11 +454,15 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
     }
 
     private void loadRewardedVideoAd() {
-        countDownTimer.cancel();
-        mAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
-        if (mAd.isLoaded()) {
-            mAd.show();
+        if (!mmmVidio.isLoaded()) {
+            countDownTimer.cancel();
+            mmmVidio.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+            mmmVidio.setImmersiveMode(false);
+            if (!mmmVidio.isLoaded()) {
+                mmmVidio.show();
+            }
         }
+
     }
 
  public  void newLevel (){
@@ -483,7 +473,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
      score_nu= ++count;
      count=score_nu;
 
-     long level_sore  = 1000/mTimeRemaining;
+     long level_sore  = Topescore/mTimeRemaining;
      scoret.setText(level_sore+"");
      score_again.setText(level_sore+"");
      score_saved_shared.add(level_sore);
@@ -542,11 +532,29 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
             @Override
             public void onResponse(Call<ArrayList<json_data>> call, Response<ArrayList<json_data>> response) {
 
-                ArrayList<json_data> jsonResponse = response.body();
-                data = new ArrayList<>();
-                data.addAll(jsonResponse);
-                 adapter = new RecyclerViewAdapter(data,BaseActivity.this);
-                recyclerView.setAdapter(adapter);
+                if (response.isSuccess()) {
+
+                    ArrayList<json_data> jsonResponse = response.body();
+                    data = new ArrayList<>();
+
+
+                    if( ! jsonResponse.isEmpty()) {
+
+
+
+
+                        data.addAll(jsonResponse);
+                        adapter = new RecyclerViewAdapter(data,BaseActivity.this);
+                        recyclerView.setAdapter(adapter);
+                    }
+
+                } else {
+                    // Do whatever you want if API is unsuccessful.
+                }
+
+
+
+
             }
 
             @Override
@@ -581,6 +589,11 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
     @Override
     public void onRewardedVideoAdClosed() {
+        if (mmmVidio.isLoaded()) {
+            mmmVidio.destroy(this);
+            mmmVidio.destroy(this);
+        }
+
      }
 
     @Override
@@ -589,8 +602,8 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
     @Override
     public void onRewardedVideoAdLoaded() {
-        if (mAd.isLoaded()) {
-            mAd.show();
+        if (mmmVidio.isLoaded()) {
+            mmmVidio.show();
         }
      }
 
@@ -600,6 +613,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
     @Override
     public void onRewardedVideoStarted() {
+
      }
 
 
@@ -615,6 +629,7 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
         @Override
 
         public void onFinish() {
+
             if(score>0){
                 editor.putLong("score" ,score);
             }
@@ -625,11 +640,14 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
             editor.commit();
 
             timerText.setText("Time's up!");
-            loadRewardedVideoAd();
+
 
             dialog= new Dialog(context, R.style.custom_dialog_theme);
             dialog.setContentView(R.layout.time_up);
             TextView text =(TextView)dialog.findViewById(R.id.text);
+            loadRewardedVideoAd();
+
+            mmmVidio.destroy( context);
             text.setText("Time's up!");
             Button dialogButton = (Button) dialog.findViewById(R.id.backtoMenu);
             // if button is clicked, close the custom dialog
@@ -685,8 +703,8 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
     @Override
     protected void onResume() {
-
-        mAd.resume(this);
+        mmmVidio.destroy(this);
+        mmmVidio.resume(this);
         if (next_layout.getVisibility() == View.VISIBLE) {
             countDownTimer.cancel();
             // Its visible
@@ -706,7 +724,9 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
     @Override
     protected void onPause() {
-        mAd.pause(this);
+        mmmVidio.pause(this);
+        mmmVidio.destroy(this);
+
         startTime=secondsRemaining * 1000;
          countDownTimer.cancel();
          super.onPause();
@@ -715,7 +735,8 @@ public class BaseActivity extends AppCompatActivity   implements RewardedVideoAd
 
     @Override
     public void onDestroy() {
-         mAd.destroy(this);
+        mmmVidio.destroy(this);
+        mmmVidio.destroy(this);
         super.onDestroy();
     }
 }

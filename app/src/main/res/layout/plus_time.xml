@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_10sdp"
-        android:text="Do want to start play again ?!"
+        android:text="Do you want to start play again ?"
         android:textAllCaps="false"
         android:textColor="#000"
         android:textAlignment="center"
@@ -42,18 +42,19 @@
 
         <Button
             android:id="@+id/delet"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/image"
             android:layout_gravity="center"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/red"
             android:gravity="center"
             android:text="No"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_25sdp"
             android:textAlignment="center"
-            android:textColor="#13734d"
+            android:textColor="#df1313"
             android:textSize="@dimen/_20sdp"
             />
     </LinearLayout>

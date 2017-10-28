@@ -1,7 +1,6 @@
 package benten.puzzle.games.gamePuzzle;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,27 +8,20 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Html;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -44,15 +36,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import benten.puzzle.games.R;
-import benten.puzzle.games.gameMomery.DifficultData;
 import benten.puzzle.games.gameMomery.EasyData;
-import benten.puzzle.games.gameMomery.HardData;
-import benten.puzzle.games.gameMomery.MediumData;
-
-import static benten.puzzle.games.R.id.action_refresh;
-import static benten.puzzle.games.R.id.removePhoto;
-import static benten.puzzle.games.R.id.selectImage;
-import static benten.puzzle.games.R.id.showImage;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,9 +82,7 @@ public class SelectYourImage  extends android.app.Fragment implements MediaPlaye
     String catogery ;
     int imageSourse ;
     EasyData easyData ;
-    MediumData mediumData;
-    HardData hardData ;
-    DifficultData difficultData ;
+
     ArrayList<Integer> images ;
     String NN;
     BaseActivity baseActivity ;

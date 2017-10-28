@@ -10,6 +10,6 @@ import retrofit2.http.GET;
  */
 
 public interface Json_data_Interface {
-    @GET("api/v1/otherapps/all")
+    @GET("api/v1/otherapps/puzzle/all")
     Call<ArrayList<json_data>> getJSON();
 }

@@ -91,7 +91,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     Bitmap bitmap ;
     Bitmap thumbnail;
     Bitmap rotatedBitmap ;
-
+    Bitmap bmp ;
     private SlidePuzzleView view;
     private SlidePuzzle slidePuzzle;
     private Options bitmapOptions;
@@ -112,6 +112,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
     PopupWindow popupWindow  ,pup;
     View popupView ,popup;
     int mCurrentX,mCurrentY;
+    String intentStringNumber ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +131,27 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
         if(bundle!=null) {
             size=bundle.getInt("DEFAULT_SIZE");
+            intentStringNumber= bundle.getString("intentStringNumber");
+            byte[] byteArray = getIntent().getByteArrayExtra("image");
+            bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
          }
-        DEFAULT_SIZE=size;
+         Toast.makeText(getApplicationContext(),bmp.getGenerationId()+"",Toast.LENGTH_LONG).show();
+
+        if(intentStringNumber.equals("Easy")){
+            DEFAULT_SIZE=3;
+        }if(intentStringNumber.equals("Medium")){
+
+            DEFAULT_SIZE=4;
+        }if(intentStringNumber.equals("Hard")){
+            DEFAULT_SIZE=5;
+
+        }if(intentStringNumber.equals("Difficult")) {
+            DEFAULT_SIZE=6;
+
+        }
+
+
+
 
 
 
@@ -172,7 +192,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
                                 popupWindow.showAtLocation( view, Gravity.CENTER, mCurrentX, mCurrentY);
                                 ImageView image = (ImageView)popupView.findViewById(R.id.image);
-                                image.setImageBitmap(thumbnail);
+                                image.setImageBitmap(bmp);
 
 
                                 Button btnClose = (Button)popupView.findViewById(R.id.btnClose);
@@ -243,22 +263,25 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
 
             }
         });
+        if(bmp==null){
+            final Dialog dialog = new Dialog(YourImageActivity.this, R.style.custom_dialog_theme);
+            dialog.setContentView(R.layout.popup_capture);
+            Button dialogButton = (Button) dialog.findViewById(R.id.btnClose);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setContentView(view);
 
-        final Dialog dialog = new Dialog(YourImageActivity.this, R.style.custom_dialog_theme);
-        dialog.setContentView(R.layout.popup_capture);
-        Button dialogButton = (Button) dialog.findViewById(R.id.btnClose);
-        // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(view);
+                    cameraIntent();
+                    dialog.dismiss();
+                }
+            });
 
-                cameraIntent();
-                dialog.dismiss();
-            }
-        });
+            dialog.show();
+        }
 
-        dialog.show();
+
 
 
 
@@ -312,7 +335,7 @@ public class YourImageActivity extends AppCompatActivity implements MediaPlayer.
         {
             setPuzzleSize(DEFAULT_SIZE, true);
         }
-
+        setBitmap(bmp);
 //        Uri path = Uri.parse("android.resource://puzzle.child.gams/" + R.drawable.dabdob);
 
 //        loadBitmap(path);

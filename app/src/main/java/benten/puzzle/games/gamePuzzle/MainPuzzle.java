@@ -2,7 +2,6 @@ package benten.puzzle.games.gamePuzzle;
 
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -18,8 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -32,10 +29,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import benten.puzzle.games.R;
-import benten.puzzle.games.gameMomery.DifficultData;
 import benten.puzzle.games.gameMomery.EasyData;
-import benten.puzzle.games.gameMomery.HardData;
-import benten.puzzle.games.gameMomery.MediumData;
 
 
 /**
@@ -78,9 +72,7 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
     String catogery ;
     int imageSourse ;
     EasyData easyData ;
-    MediumData mediumData;
-    HardData hardData ;
-    DifficultData difficultData ;
+
     ArrayList<Integer> images ;
     String NN;
     BaseActivity baseActivity ;
@@ -106,9 +98,7 @@ public class MainPuzzle extends Fragment  implements MediaPlayer.OnCompletionLis
 
         images = new ArrayList<>();
         easyData= new EasyData();
-        mediumData= new MediumData();
-        hardData=new HardData();
-        difficultData= new DifficultData();
+
 
         bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
